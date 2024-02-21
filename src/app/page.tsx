@@ -1,13 +1,11 @@
-import Image from "next/image";
-import styles from "./page.module.css";
-import { TextGenerateEffectDemo } from "./TextGenerateEffectDemo";
-import { HeroParallaxDemo } from "./Parallax";
+"use client";
+import React from "react";
+import Carousel from "./component/ui/Carousel";
 
 export default function Home() {
   return (
-    <main>
-      <TextGenerateEffectDemo />
-      <HeroParallaxDemo />
-    </main>
+    <>
+      <Carousel />
+    </>
   );
 }

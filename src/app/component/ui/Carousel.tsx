@@ -12,14 +12,10 @@ import {
   EffectFade,
 } from "swiper/modules";
 import "swiper/css";
-import "swiper/css/pagination";
-// import "swiper/css/navigation";
-////////////////////////////////////////////////////////// library import
-
-import "swiper/css";
 import "swiper/css/effect-fade";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+////////////////////////////////////////////////////////// library import
 
 const Carousel = () => {
   const swiperElRef = useRef(null);
@@ -57,7 +53,7 @@ const Carousel = () => {
         effect={"fade"}
         modules={[EffectFade, Pagination, Autoplay]}
         pagination={pagination}
-        // autoplay={{ delay: 5000, disableOnInteraction: false }}
+        autoplay={{ delay: 5000, disableOnInteraction: false }}
         loop={true}
         className="swiper-custom"
       >
