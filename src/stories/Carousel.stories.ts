@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import Carousel from "../app/component/ui/Carousel";
 
 const meta = {
-  title: "Example/Carousel1",
+  title: "Example/Carousel",
   component: Carousel,
   parameters: {
     // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout
