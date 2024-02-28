@@ -13,4 +13,8 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Progress: Story = {};
+export const Progress: Story = {
+  args: {
+    pause: false,
+  },
+};

@@ -8,6 +8,20 @@
   object-fit: cover;
 }
 
+.swiper-pagination-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.swiper-custom-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-basis: 0;
+}
+
 .swiper-custom-pagination .swiper-pagination-bullet {
   position: relative;
   width: 50px;
@@ -17,8 +31,6 @@
 }
 .swiper-pagination-bullet-active .swiper-pagination-bullet-active {
   width: 50px;
-  border-radius: 12px;
-  background: #00f !important;
 }
 .swiper-pagination-image {
   width: 50px;

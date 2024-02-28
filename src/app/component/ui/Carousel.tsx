@@ -17,8 +17,12 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 ////////////////////////////////////////////////////////// library import
 
-const Carousel = () => {
-  const swiperElRef = useRef(null);
+interface CarouselProps {
+  pause?: boolean;
+}
+
+const Carousel = ({ pause = true, ...props }: CarouselProps) => {
+  const swiperElRef = useRef(null) as any;
   const [isSwiperStop, setIsSwiperStop] = useState(false);
 
   const data = [
@@ -40,7 +44,7 @@ const Carousel = () => {
       return `
       <span class="${className}">
           <img class="swiper-pagination-image" src="${data[index]}">
-          <svg width="50" height="50" class="progress"><rect width="50" height="50" /></svg>
+<svg width="50" height="50" class="progress"><rect width="50" height="50" /></svg>
       </span>
       `;
     },
@@ -65,6 +69,33 @@ const Carousel = () => {
       </Swiper>
       <div className="swiper-pagination-wrapper">
         <div className="swiper-custom-pagination"></div>
+        {pause && (
+          <button
+            onClick={() => {
+              if (isSwiperStop) {
+                if (swiperElRef.current) {
+                  swiperElRef.current.swiper.autoplay.start();
+                  swiperElRef.current.swiper.pagination.bullets[
+                    swiperElRef.current.swiper.activeIndex
+                  ].classList.remove("stop");
+                  swiperElRef.current.swiper.pagination.bullets[
+                    swiperElRef.current.swiper.activeIndex
+                  ].classList.add("swiper-pagination-bullet-active");
+                }
+
+                setIsSwiperStop(false);
+              } else {
+                swiperElRef.current.swiper.autoplay.stop();
+                swiperElRef.current.swiper.pagination.bullets[
+                  swiperElRef.current.swiper.activeIndex
+                ].classList.remove("swiper-pagination-bullet-active");
+                setIsSwiperStop(true);
+              }
+            }}
+          >
+            {isSwiperStop ? "play" : "pause"}
+          </button>
+        )}
       </div>
     </>
   );
