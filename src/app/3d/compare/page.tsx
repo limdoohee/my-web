@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import Cube1 from "../component/3d/threejs/cube";
-import Cube2 from "../component/3d/r3f/cube";
+import Cube1 from "../../component/3d/threejs/cube";
+import Cube2 from "../../component/3d/r3f/cube";
 import { CopyBlock, dracula } from "react-code-blocks";
 
 export default function Page() {
