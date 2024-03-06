@@ -17,7 +17,8 @@ import * as THREE from "three";
 export default function App() {
   return (
     <div className="canvas-wrapper">
-      <Canvas shadows camera={{ position: [5, 0, 0], fov: 75 }}>
+      {/* <Canvas shadows> */}
+      <Canvas shadows camera={{ position: [0, 0, 0], fov: 75 }}>
         <ambientLight intensity={0.5} />
         <Stage
           environment="city"
@@ -28,28 +29,28 @@ export default function App() {
             color: "#000",
             opacity: 0.8,
           }}
-          adjustCamera={1}
+          adjustCamera={0.7}
         >
           <Earth />
-          <group position={[4.2, 3.5, 0.6]}>
-            <Marker rotation={[0, Math.PI / 2, 0]}>
+          <group position={[-0.1, 0.4, 5.3]}>
+            <Marker rotation={[0, 0, 0]}>
               <div
                 style={{
                   position: "absolute",
-                  fontSize: 10,
+                  fontSize: 7,
                   letterSpacing: -0.5,
                   color: "orange",
-                  WebkitTextStroke: "0.2px #000",
+                  textShadow: "0px 0px 2px #fff",
                 }}
               >
-                seoul
+                Seoul
               </div>
             </Marker>
           </group>
         </Stage>
         <OrbitControls
           autoRotate
-          makeDefault
+          // makeDefault
           autoRotateSpeed={0.5}
           enablePan={false}
           // minPolarAngle={Math.PI / 2.1}

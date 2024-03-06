@@ -7,7 +7,7 @@ export default function Model(props) {
 
   return (
     <mesh
-      rotation={[0, Math.PI / 1.3, 0]}
+      rotation={[0.6, Math.PI / 3.3, 0]}
       scale={0.01}
       castShadow
       geometry={nodes.Cube001.geometry}
