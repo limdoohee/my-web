@@ -1,25 +1,25 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import {
-  OrbitControls,
-  BakeShadows,
-  Stage,
-  AccumulativeShadows,
-  RandomizedLight,
-  Html,
-  useGLTF,
-} from "@react-three/drei";
+import { OrbitControls, Stage, Html, useGLTF } from "@react-three/drei";
 import Earth from "./Earth";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import styles from "./earth.module.css";
 
 export default function App() {
+  const cameraControlRef = useRef(null);
+  const [polarAngle, setPolarAngle] = useState();
+  const [azimuthalAngle, setAzimuthalAngle] = useState();
+
   return (
     <div className="canvas-wrapper">
-      {/* <Canvas shadows> */}
-      <Canvas shadows camera={{ position: [0, 0, 0], fov: 75 }}>
-        <ambientLight intensity={0.5} />
+      <Canvas
+        frameloop="demand"
+        // camera={{ position: [0, 0, 4] }}
+        // style={{ pointerEvents: "none" }}
+      >
+        <ambientLight intensity={1} />
         <Stage
           environment="city"
           intensity={0.1}
@@ -49,14 +49,50 @@ export default function App() {
           </group>
         </Stage>
         <OrbitControls
+          ref={cameraControlRef}
           autoRotate
-          // makeDefault
+          makeDefault
           autoRotateSpeed={0.5}
           enablePan={false}
-          // minPolarAngle={Math.PI / 2.1}
-          // maxPolarAngle={Math.PI / 2.1}
+          onUpdate={(e) => {
+            setPolarAngle(e.getPolarAngle());
+            setAzimuthalAngle(e.getAzimuthalAngle());
+            console.log(e.current);
+          }}
         />
       </Canvas>
+      <div className={styles.cities}>
+        <button
+          type="button"
+          onClick={() => {
+            cameraControlRef.current?.setPolarAngle(polarAngle);
+            cameraControlRef.current?.setAzimuthalAngle(azimuthalAngle);
+            // cameraControlRef.current?.autoRotate = false;
+          }}
+        >
+          Seoul
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            cameraControlRef.current?.setPolarAngle(1.61);
+            cameraControlRef.current?.setAzimuthalAngle(0.2);
+          }}
+        >
+          Tokyo
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            cameraControlRef.current?.setPolarAngle(0.8);
+            cameraControlRef.current?.setAzimuthalAngle(1.5);
+            console.log(cameraControlRef.current);
+            // cameraControlRef.current?.target.set(1, 1, 1);
+          }}
+        >
+          Los Angeles
+        </button>
+      </div>
     </div>
   );
 }
