@@ -11,3 +11,9 @@
   font-size: 10vh;
   font-weight: 900;
 }
+
+.functions {
+  position: absolute;
+  top: 0;
+  right: 0;
+}

@@ -3,7 +3,7 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Stage, Html, useGLTF } from "@react-three/drei";
 import Earth from "./Earth";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import * as THREE from "three";
 import styles from "./earth.module.css";
 
@@ -12,15 +12,6 @@ export default function App() {
   const [autoRotate, setAutoRotate] = useState(true);
   const [polarAngle, setPolarAngle] = useState();
   const [azimuthalAngle, setAzimuthalAngle] = useState();
-
-  const PauseControls = () => {
-    // console.log("PauseControls");
-    setAutoRotate(false);
-    setTimeout(() => {
-      // console.log("setTimeout", autoRotate);
-      setAutoRotate(true);
-    }, 3000);
-  };
 
   return (
     <div className="canvas-wrapper">
@@ -60,7 +51,9 @@ export default function App() {
           makeDefault
           autoRotateSpeed={0.5}
           enablePan={false}
-          onUpdate={(e) => {}}
+          onUpdate={(e) => {
+            console.log(e);
+          }}
         />
       </Canvas>
       <div className={styles.cities}>
@@ -69,7 +62,6 @@ export default function App() {
           onClick={() => {
             cameraControlRef.current?.setPolarAngle(1.5);
             cameraControlRef.current?.setAzimuthalAngle(0);
-            PauseControls();
           }}
         >
           Seoul
@@ -79,7 +71,6 @@ export default function App() {
           onClick={() => {
             cameraControlRef.current?.setPolarAngle(1.61);
             cameraControlRef.current?.setAzimuthalAngle(0.2);
-            PauseControls();
           }}
         >
           Tokyo
@@ -89,11 +80,22 @@ export default function App() {
           onClick={() => {
             cameraControlRef.current?.setPolarAngle(0.8);
             cameraControlRef.current?.setAzimuthalAngle(1.5);
-            PauseControls();
           }}
         >
           Los Angeles
         </button>
+      </div>
+      <div>
+        <ul className={styles.functions}>
+          <li
+            onClick={() => {
+              console.log(autoRotate);
+              setAutoRotate(!autoRotate);
+            }}
+          >
+            Rotate {autoRotate ? "pause" : "play"}
+          </li>
+        </ul>
       </div>
     </div>
   );
