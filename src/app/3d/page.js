@@ -6,6 +6,7 @@ import Earth from "./Earth";
 import { useRef, useState } from "react";
 import * as THREE from "three";
 import styles from "./earth.module.css";
+import data from "./data.json";
 
 export default function App() {
   const cameraControlRef = useRef(null);
@@ -29,21 +30,11 @@ export default function App() {
           adjustCamera={0.7}
         >
           <Earth />
-          <group position={[-0.1, 0.4, 5.3]}>
-            <Marker rotation={[0, 0, 0]}>
-              <div
-                style={{
-                  position: "absolute",
-                  fontSize: 7,
-                  letterSpacing: -0.5,
-                  color: "orange",
-                  textShadow: "0px 0px 2px #fff",
-                }}
-              >
-                Seoul
-              </div>
-            </Marker>
-          </group>
+          {data.map((e) => (
+            <group position={e.position} key={e.city}>
+              <Marker rotation={[0, `${e.angle[1]}`, 0]} city={e.city} />
+            </group>
+          ))}
         </Stage>
         <OrbitControls
           ref={cameraControlRef}
@@ -51,45 +42,25 @@ export default function App() {
           makeDefault
           autoRotateSpeed={0.5}
           enablePan={false}
-          onUpdate={(e) => {
-            console.log(e);
-          }}
         />
       </Canvas>
       <div className={styles.cities}>
-        <button
-          type="button"
-          onClick={() => {
-            cameraControlRef.current?.setPolarAngle(1.5);
-            cameraControlRef.current?.setAzimuthalAngle(0);
-          }}
-        >
-          Seoul
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            cameraControlRef.current?.setPolarAngle(1.61);
-            cameraControlRef.current?.setAzimuthalAngle(0.2);
-          }}
-        >
-          Tokyo
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            cameraControlRef.current?.setPolarAngle(0.8);
-            cameraControlRef.current?.setAzimuthalAngle(1.5);
-          }}
-        >
-          Los Angeles
-        </button>
+        {data.map((e) => (
+          <button
+            key={e.city}
+            onClick={() => {
+              cameraControlRef.current?.setPolarAngle(e.angle[0]);
+              cameraControlRef.current?.setAzimuthalAngle(e.angle[1]);
+            }}
+          >
+            {e.city}
+          </button>
+        ))}
       </div>
       <div>
         <ul className={styles.functions}>
           <li
             onClick={() => {
-              console.log(autoRotate);
               setAutoRotate(!autoRotate);
             }}
           >
@@ -101,13 +72,11 @@ export default function App() {
   );
 }
 
-function Marker({ children, ...props }) {
+function Marker({ ...props }) {
   const ref = useRef();
-  // This holds the local occluded state
   const [isOccluded, setOccluded] = useState();
   const [isInRange, setInRange] = useState();
   const isVisible = isInRange && !isOccluded;
-  // Test distance
   const vec = new THREE.Vector3();
   useFrame((state) => {
     const range =
@@ -117,13 +86,9 @@ function Marker({ children, ...props }) {
   return (
     <group ref={ref}>
       <Html
-        // 3D-transform contents
         transform
-        // Hide contents "behind" other meshes
         occlude
-        // Tells us when contents are occluded (or not)
         onOcclude={setOccluded}
-        // We just interpolate the visible state into css opacity and transforms
         style={{
           transition: "all 0.2s",
           opacity: isVisible ? 1 : 0,
@@ -131,7 +96,17 @@ function Marker({ children, ...props }) {
         }}
         {...props}
       >
-        {children}
+        <div
+          style={{
+            position: "absolute",
+            fontSize: 7,
+            letterSpacing: -0.5,
+            color: "orange",
+            textShadow: "0px 0px 2px #fff",
+          }}
+        >
+          {props.city}
+        </div>
       </Html>
     </group>
   );
