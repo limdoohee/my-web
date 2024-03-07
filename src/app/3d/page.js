@@ -9,16 +9,22 @@ import styles from "./earth.module.css";
 
 export default function App() {
   const cameraControlRef = useRef(null);
+  const [autoRotate, setAutoRotate] = useState(true);
   const [polarAngle, setPolarAngle] = useState();
   const [azimuthalAngle, setAzimuthalAngle] = useState();
 
+  const PauseControls = () => {
+    // console.log("PauseControls");
+    setAutoRotate(false);
+    setTimeout(() => {
+      // console.log("setTimeout", autoRotate);
+      setAutoRotate(true);
+    }, 3000);
+  };
+
   return (
     <div className="canvas-wrapper">
-      <Canvas
-        frameloop="demand"
-        // camera={{ position: [0, 0, 4] }}
-        // style={{ pointerEvents: "none" }}
-      >
+      <Canvas frameloop="demand">
         <ambientLight intensity={1} />
         <Stage
           environment="city"
@@ -50,24 +56,20 @@ export default function App() {
         </Stage>
         <OrbitControls
           ref={cameraControlRef}
-          autoRotate
+          autoRotate={autoRotate}
           makeDefault
           autoRotateSpeed={0.5}
           enablePan={false}
-          onUpdate={(e) => {
-            setPolarAngle(e.getPolarAngle());
-            setAzimuthalAngle(e.getAzimuthalAngle());
-            console.log(e.current);
-          }}
+          onUpdate={(e) => {}}
         />
       </Canvas>
       <div className={styles.cities}>
         <button
           type="button"
           onClick={() => {
-            cameraControlRef.current?.setPolarAngle(polarAngle);
-            cameraControlRef.current?.setAzimuthalAngle(azimuthalAngle);
-            // cameraControlRef.current?.autoRotate = false;
+            cameraControlRef.current?.setPolarAngle(1.5);
+            cameraControlRef.current?.setAzimuthalAngle(0);
+            PauseControls();
           }}
         >
           Seoul
@@ -77,6 +79,7 @@ export default function App() {
           onClick={() => {
             cameraControlRef.current?.setPolarAngle(1.61);
             cameraControlRef.current?.setAzimuthalAngle(0.2);
+            PauseControls();
           }}
         >
           Tokyo
@@ -86,8 +89,7 @@ export default function App() {
           onClick={() => {
             cameraControlRef.current?.setPolarAngle(0.8);
             cameraControlRef.current?.setAzimuthalAngle(1.5);
-            console.log(cameraControlRef.current);
-            // cameraControlRef.current?.target.set(1, 1, 1);
+            PauseControls();
           }}
         >
           Los Angeles
