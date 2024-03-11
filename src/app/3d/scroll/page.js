@@ -1,7 +1,7 @@
 "use client";
 
 import * as THREE from "three";
-import { forwardRef } from "react";
+import React, { forwardRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Html, useGLTF, ScrollControls, useScroll } from "@react-three/drei";
 import useRefs from "react-use-refs";
@@ -103,7 +103,7 @@ function Composition({ ...props }) {
   );
 }
 
-const Text = forwardRef(({ head, stat, expl, ...props }, ref) => {
+const Text = React.forwardRef(({ head, stat, expl, ...props }, ref) => {
   return (
     <Html
       position={[0, 1, 1]}
@@ -121,7 +121,7 @@ const Text = forwardRef(({ head, stat, expl, ...props }, ref) => {
   );
 });
 
-const Mac = forwardRef(({ ...props }, ref) => {
+const Mac = React.forwardRef(({ ...props }, ref) => {
   const { nodes, materials } = useGLTF("/models/mbp-v1-pipe.glb");
   return (
     <group {...props} dispose={null}>
