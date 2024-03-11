@@ -2,13 +2,13 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Stage, Html, useGLTF } from "@react-three/drei";
-import Earth from "./Model";
+import Model from "./Model";
 import { useRef, useState } from "react";
 import * as THREE from "three";
 import styles from "./earth.module.css";
 import data from "./data.json";
 
-export default function App() {
+export default function Earth() {
   const cameraControlRef = useRef(null);
   const [autoRotate, setAutoRotate] = useState(true);
   const [polarAngle, setPolarAngle] = useState();
@@ -29,7 +29,7 @@ export default function App() {
           }}
           adjustCamera={0.7}
         >
-          <Earth />
+          <Model />
           {data.map((e) => (
             <group position={e.position} key={e.city}>
               <Marker rotation={[0, `${e.angle[1]}`, 0]} city={e.city} />
