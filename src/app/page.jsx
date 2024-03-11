@@ -12,17 +12,20 @@ import {
 } from "@react-three/drei";
 import { easing } from "maath";
 import "./util";
+import { useRouter } from "next/navigation";
+import styles from "./main.module.css";
 
 const pageList = [
   { id: 1, url: "/ui/carousel/progress" },
   { id: 2, url: "/3d/scroll" },
   { id: 3, url: "/3d/earth" },
   { id: 4, url: "https://web-diary-e3eb7.web.app/" },
+  { id: 5, url: "/3d/compare" },
 ];
 
 export default function Home() {
   return (
-    <div className="canvas-wrapper">
+    <div className={styles["canvas-wrapper"]}>
       <Canvas camera={{ position: [0, 0, 100], fov: 15 }}>
         <fog attach="fog" args={["#a79", 8.5, 12]} />
         <ScrollControls pages={4} infinite>
@@ -32,6 +35,7 @@ export default function Home() {
         </ScrollControls>
         <Environment preset="night" background blur={0.5} />
       </Canvas>
+      <div className={styles.text}>Scroll up & down</div>
     </div>
   );
 }
@@ -53,7 +57,7 @@ function Rig(props) {
   return <group ref={ref} {...props} />;
 }
 
-function Carousel({ radius = 1.4, count = 4 }) {
+function Carousel({ radius = 1.4, count = 5 }) {
   return (
     <>
       {pageList.map((e, i) => (
@@ -74,6 +78,7 @@ function Carousel({ radius = 1.4, count = 4 }) {
 }
 
 function Card({ src, url, ...props }) {
+  const router = useRouter();
   const ref = useRef();
   const [hovered, hover] = useState(false);
   const pointerOver = (e) => (e.stopPropagation(), hover(true));
@@ -97,7 +102,7 @@ function Card({ src, url, ...props }) {
       side={THREE.DoubleSide}
       onPointerOver={pointerOver}
       onPointerOut={pointerOut}
-      onClick={() => (window.location.href = url)}
+      onClick={() => router.push(url)}
       {...props}
     >
       <bentPlaneGeometry args={[0.1, 1, 1, 20, 20]} />
