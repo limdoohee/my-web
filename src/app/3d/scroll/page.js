@@ -1,11 +1,12 @@
 "use client";
 
 import * as THREE from "three";
-import React, { forwardRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Html, useGLTF, ScrollControls, useScroll } from "@react-three/drei";
+import { ScrollControls, useScroll } from "@react-three/drei";
 import useRefs from "react-use-refs";
 import styles from "./scroll.module.css";
+import Mac from "./Mac";
+import Text from "./Text";
 
 const rsqw = (t, delta = 0.1, a = 1, f = 1 / (2 * Math.PI)) =>
   (a / Math.atan(1 / delta)) * Math.atan(Math.sin(2 * Math.PI * t * f) / delta);
@@ -102,55 +103,3 @@ function Composition({ ...props }) {
     </>
   );
 }
-
-const Text = React.forwardRef(({ head, stat, expl, ...props }, ref) => {
-  return (
-    <Html
-      position={[0, 1, 1]}
-      center
-      ref={ref}
-      occlude
-      // transform
-      className={styles["text-wrapper"]}
-      {...props}
-    >
-      <div>{head}</div>
-      <h1>{stat}</h1>
-      <h2>{expl}</h2>
-    </Html>
-  );
-});
-
-const Mac = React.forwardRef(({ ...props }, ref) => {
-  const { nodes, materials } = useGLTF("/models/mbp-v1-pipe.glb");
-  return (
-    <group {...props} dispose={null}>
-      <group
-        ref={ref}
-        position={[0, -0.43, -11.35]}
-        rotation={[Math.PI / 2, 0, 0]}
-      >
-        <mesh
-          geometry={nodes.back_1.geometry}
-          material={materials.blackmatte}
-        />
-        <mesh
-          receiveShadow
-          castShadow
-          geometry={nodes.back_2.geometry}
-          material={materials.aluminium}
-        />
-        <mesh geometry={nodes.matte.geometry}>
-          <meshLambertMaterial color={"#fff"} toneMapped={false} />
-        </mesh>
-      </group>
-      <mesh
-        geometry={nodes.body_1.geometry}
-        material={materials.aluminium}
-        material-color="#aaaaaf"
-        material-envMapIntensity={0.2}
-      />
-      <mesh geometry={nodes.body_2.geometry} material={materials.blackmatte} />
-    </group>
-  );
-});
