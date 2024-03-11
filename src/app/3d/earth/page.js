@@ -1,9 +1,9 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Stage, Html, useGLTF } from "@react-three/drei";
+import { OrbitControls, Stage, Html, useProgress } from "@react-three/drei";
 import Model from "./Model";
-import { useRef, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import * as THREE from "three";
 import styles from "./earth.module.css";
 import data from "./data.json";
@@ -11,9 +11,7 @@ import data from "./data.json";
 export default function Earth() {
   const cameraControlRef = useRef(null);
   const [autoRotate, setAutoRotate] = useState(true);
-  const [polarAngle, setPolarAngle] = useState();
-  const [azimuthalAngle, setAzimuthalAngle] = useState();
-
+  const { nodes, materials } = useGLTF("/models/Earth.glb");
   return (
     <div className="canvas-wrapper">
       <Canvas frameloop="demand">
@@ -29,7 +27,9 @@ export default function Earth() {
           }}
           adjustCamera={0.7}
         >
-          <Model />
+          <Suspense fallback={<Loader />}>
+            <Model />
+          </Suspense>
           {data.map((e) => (
             <group position={e.position} key={e.city}>
               <Marker rotation={[0, `${e.angle[1]}`, 0]} city={e.city} />
@@ -110,4 +110,9 @@ function Marker({ ...props }) {
       </Html>
     </group>
   );
+}
+
+function Loader() {
+  const { progress } = useProgress();
+  return <Html center>{progress} % loaded</Html>;
 }
