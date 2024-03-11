@@ -11,7 +11,7 @@ import data from "./data.json";
 export default function Earth() {
   const cameraControlRef = useRef(null);
   const [autoRotate, setAutoRotate] = useState(true);
-  const { nodes, materials } = useGLTF("/models/Earth.glb");
+
   return (
     <div className="canvas-wrapper">
       <Canvas frameloop="demand">
