@@ -25,7 +25,7 @@ const pageList = [
 
 export default function Home() {
   return (
-    <div className={styles["canvas-wrapper"]}>
+    <div className="canvas-wrapper">
       <Canvas camera={{ position: [0, 0, 100], fov: 15 }}>
         <fog attach="fog" args={["#a79", 8.5, 12]} />
         <ScrollControls pages={4} infinite>
