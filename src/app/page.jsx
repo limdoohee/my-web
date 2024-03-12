@@ -21,6 +21,7 @@ const pageList = [
   { id: 3, url: "/3d/earth" },
   { id: 4, url: "https://web-diary-e3eb7.web.app/" },
   { id: 5, url: "/3d/compare" },
+  { id: 6, url: "/3d/positioning" },
 ];
 
 export default function Home() {
@@ -57,7 +58,7 @@ function Rig(props) {
   return <group ref={ref} {...props} />;
 }
 
-function Carousel({ radius = 1.4, count = 5 }) {
+function Carousel({ radius = 1.4, count = 6 }) {
   return (
     <>
       {pageList.map((e, i) => (
