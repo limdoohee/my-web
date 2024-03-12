@@ -19,6 +19,14 @@
   height: 100vh;
 }
 
+.canvas-upper-text {
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  font-size: 2vh;
+  color: rgba(255, 255, 255, 0.7);
+}
+
 canvas {
   width: 100%;
   height: 100%;
