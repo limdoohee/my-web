@@ -1,10 +1,11 @@
 "use client";
 
 import { Environment, OrbitControls } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import { useState } from "react";
 
 export default function Positioning() {
+  const [cubes, setCubes] = useState([]);
   const [positionX, setPositionX] = useState(0);
   const [positionZ, setPositionZ] = useState(0);
 
@@ -14,7 +15,7 @@ export default function Positioning() {
         dpr={[1, 2]}
         shadows
         gl={{ alpha: false }}
-        camera={{ position: [0, 5, 7], fov: 50 }}
+        camera={{ position: [2, 5, 7], fov: 50 }}
       >
         <Environment preset="apartment" background blur={1} />
         <hemisphereLight intensity={1} />
@@ -27,25 +28,31 @@ export default function Positioning() {
           shadow-mapSize-width={1028}
           shadow-mapSize-height={1028}
         />
-        <Plane setPositionX={setPositionX} setPositionZ={setPositionZ} />
-        <gridHelper
-          position={[0, 0, -2]}
-          args={[8, 8]}
-          // onPointerMove={(e) => console.log(e)}
+        <Plane
+          setPositionX={setPositionX}
+          setPositionZ={setPositionZ}
+          cubes={cubes}
+          setCubes={setCubes}
         />
-        <Cube />
+        <gridHelper position={[0, 0, -2]} args={[8, 8]} />
         {positionX && <Rollover position={[positionX, 0.5, positionZ]} />}
-        <OrbitControls />
+        {[...cubes]}
+        <OrbitControls
+          maxPolarAngle={Math.PI / 2}
+          minDistance={6}
+          maxDistance={13}
+        />
       </Canvas>
       <div className="canvas-upper-text">
         <p>Left Click And Drag - Rotate</p>
         <p>Right Click And Drag - Pan</p>
+        <p>Scroll - Zoom</p>
       </div>
     </div>
   );
 }
 
-const Plane = ({ setPositionX, setPositionZ }) => {
+const Plane = ({ setPositionX, setPositionZ, cubes, setCubes }) => {
   return (
     <mesh
       receiveShadow
@@ -55,16 +62,30 @@ const Plane = ({ setPositionX, setPositionZ }) => {
         setPositionX(Math.floor(e.point.x) + 0.5);
         setPositionZ(Math.floor(e.point.z) + 0.5);
       }}
+      onClick={(e) => {
+        setCubes([
+          ...cubes,
+          <Cube
+            key={cubes.length + 1}
+            id={cubes.length + 1}
+            position={[
+              Math.floor(e.point.x) + 0.5,
+              0.5,
+              Math.floor(e.point.z) + 0.5,
+            ]}
+          />,
+        ]);
+      }}
     >
       <planeGeometry args={[8, 8]} />
-      <meshStandardMaterial color="pink" />
+      <meshStandardMaterial color="white" />
     </mesh>
   );
 };
 
-const Cube = () => {
+const Cube = ({ position, id }) => {
   return (
-    <mesh receiveShadow castShadow position={[-3.5, 0.5, 0]}>
+    <mesh receiveShadow castShadow position={position} key={id}>
       <boxGeometry args={[1, 1, 1]} />
       <meshNormalMaterial />
     </mesh>
