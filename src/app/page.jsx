@@ -35,7 +35,7 @@ export default function Home() {
         </ScrollControls>
         <Environment preset="night" background blur={0.5} />
       </Canvas>
-      <div className={styles.text}>Scroll up & down</div>
+      <div className="canvas-upper-text">Scroll up & down</div>
     </div>
   );
 }
