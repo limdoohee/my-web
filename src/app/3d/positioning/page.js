@@ -1,8 +1,8 @@
 "use client";
 
-import { Environment, OrbitControls } from "@react-three/drei";
-import { Canvas, useThree } from "@react-three/fiber";
 import { useState } from "react";
+import { Canvas } from "@react-three/fiber";
+import { Environment, OrbitControls, useCursor } from "@react-three/drei";
 
 export default function Positioning() {
   const [cubes, setCubes] = useState([]);
@@ -53,12 +53,16 @@ export default function Positioning() {
 }
 
 const Plane = ({ setPositionX, setPositionZ, cubes, setCubes }) => {
+  const [hovered, set] = useState(false);
+  useCursor(hovered);
   return (
     <mesh
       receiveShadow
       rotation={[-Math.PI / 2, 0, 0]}
       position={[0, 0, -2]}
+      onPointerOut={() => set(false)}
       onPointerMove={(e) => {
+        set(true);
         setPositionX(Math.floor(e.point.x) + 0.5);
         setPositionZ(Math.floor(e.point.z) + 0.5);
       }}
