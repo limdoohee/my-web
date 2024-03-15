@@ -97,7 +97,7 @@ const Plane = () => {
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, -2]} receiveShadow>
       <planeGeometry args={[8, 8]} />
-      <meshStandardMaterial color="white" />
+      <meshDepthMaterial opacity={0} />
     </mesh>
   );
 };
