@@ -2,10 +2,22 @@
 
 import { useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import { Environment, OrbitControls, useCursor } from "@react-three/drei";
+import {
+  Environment,
+  OrbitControls,
+  useCursor,
+  useGLTF,
+} from "@react-three/drei";
+import Image from "next/image";
+import {
+  Selection,
+  Select,
+  EffectComposer,
+  Outline,
+} from "@react-three/postprocessing";
 
 export default function Positioning() {
-  const [cubes, setCubes] = useState([]);
+  const [model, setModel] = useState([]);
   const [positionX, setPositionX] = useState(0);
   const [positionZ, setPositionZ] = useState(0);
 
@@ -28,79 +40,81 @@ export default function Positioning() {
           shadow-mapSize-width={1028}
           shadow-mapSize-height={1028}
         />
-        <Plane
-          setPositionX={setPositionX}
-          setPositionZ={setPositionZ}
-          cubes={cubes}
-          setCubes={setCubes}
-        />
-        <gridHelper position={[0, 0, -2]} args={[8, 8]} />
-        {positionX && <Rollover position={[positionX, 0.5, positionZ]} />}
-        {[...cubes]}
+        {/* <gridHelper position={[0, 0, -2]} args={[8, 8]} /> */}
+        <Selection>
+          <EffectComposer multisampling={8} autoClear={false} enabled={true}>
+            <Outline
+              visibleEdgeColor="green"
+              hiddenEdgeColor="red"
+              blur
+              edgeStrength={5}
+            />
+          </EffectComposer>
+          {[...model]}
+        </Selection>
         <OrbitControls
-          maxPolarAngle={Math.PI / 2}
-          minDistance={6}
-          maxDistance={13}
+        // minPolarAngle={0}
+        // maxPolarAngle={Math.PI / 2}
+        // minDistance={6}
+        // maxDistance={13}
         />
+        <Plane />
       </Canvas>
-      <div className="canvas-upper-text">
+      <div className="canvas-left-text">
         <p>Left Click And Drag - Rotate</p>
         <p>Right Click And Drag - Pan</p>
         <p>Scroll - Zoom</p>
+        <div className="products">
+          {Array.from({ length: 2 }, (_, i) => i + 1).map((e, i) => (
+            <Image
+              key={i}
+              width={150}
+              height={150}
+              src={`/images/furniture/${i + 1}.avif`}
+              alt={i + 1}
+              onClick={() => {
+                setModel([
+                  ...model,
+                  <Model
+                    key={model.length + 1}
+                    id={i + 1}
+                    position={[0, 0.5, 0]}
+                  />,
+                ]);
+              }}
+            />
+          ))}
+        </div>
+      </div>
+      <div className="canvas-right-text">
+        <p>Click - Rotate 90 degree</p>
       </div>
     </div>
   );
 }
 
-const Plane = ({ setPositionX, setPositionZ, cubes, setCubes }) => {
-  const [hovered, set] = useState(false);
-  useCursor(hovered);
+const Plane = () => {
   return (
-    <mesh
-      receiveShadow
-      rotation={[-Math.PI / 2, 0, 0]}
-      position={[0, 0, -2]}
-      onPointerOut={() => set(false)}
-      onPointerMove={(e) => {
-        set(true);
-        setPositionX(Math.floor(e.point.x) + 0.5);
-        setPositionZ(Math.floor(e.point.z) + 0.5);
-      }}
-      onClick={(e) => {
-        setCubes([
-          ...cubes,
-          <Cube
-            key={cubes.length + 1}
-            id={cubes.length + 1}
-            position={[
-              Math.floor(e.point.x) + 0.5,
-              0.5,
-              Math.floor(e.point.z) + 0.5,
-            ]}
-          />,
-        ]);
-      }}
-    >
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, -2]} receiveShadow>
       <planeGeometry args={[8, 8]} />
       <meshStandardMaterial color="white" />
     </mesh>
   );
 };
 
-const Cube = ({ position, id }) => {
-  return (
-    <mesh receiveShadow castShadow position={position} key={id}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshNormalMaterial />
-    </mesh>
-  );
-};
+const Model = ({ id }) => {
+  const [hovered, set] = useState(false);
+  useCursor(hovered);
 
-const Rollover = ({ position }) => {
+  const glb = useGLTF(`/models/furniture/${id}.glb`, true);
+
   return (
-    <mesh position={position}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshBasicMaterial color="red" opacity={0.5} transparent />
-    </mesh>
+    <Select enabled={hovered}>
+      <primitive
+        object={glb.scene}
+        onPointerOver={() => set(true)}
+        onPointerOut={() => set(false)}
+      />
+    </Select>
   );
 };

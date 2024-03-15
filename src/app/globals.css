@@ -19,11 +19,20 @@
   height: 100vh;
 }
 
-.canvas-upper-text {
+.canvas-left-text {
   position: absolute;
   top: 50px;
   left: 50px;
   font-size: 2vh;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.canvas-right-text {
+  position: absolute;
+  top: 50px;
+  right: 50px;
+  font-size: 2vh;
+  text-align: right;
   color: rgba(255, 255, 255, 0.7);
 }
 
