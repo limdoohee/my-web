@@ -40,7 +40,7 @@ export default function Positioning() {
           shadow-mapSize-width={1028}
           shadow-mapSize-height={1028}
         />
-        {/* <gridHelper position={[0, 0, -2]} args={[8, 8]} /> */}
+        <gridHelper position={[0, 0, -2]} args={[8, 8]} />
         <Selection>
           <EffectComposer multisampling={8} autoClear={false} enabled={true}>
             <Outline
@@ -53,10 +53,10 @@ export default function Positioning() {
           {[...model]}
         </Selection>
         <OrbitControls
-        // minPolarAngle={0}
-        // maxPolarAngle={Math.PI / 2}
-        // minDistance={6}
-        // maxDistance={13}
+          minPolarAngle={0}
+          maxPolarAngle={Math.PI / 2}
+          minDistance={6}
+          maxDistance={13}
         />
         <Plane />
       </Canvas>
