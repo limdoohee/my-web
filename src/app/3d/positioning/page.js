@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import {
+  DragControls,
   Environment,
   OrbitControls,
   useCursor,
@@ -19,6 +20,7 @@ import {
 export default function Positioning() {
   const [models, setModels] = useState([]);
   const [selected, setSelected] = useState();
+  const [controls, setControls] = useState(false);
   const [positionX, setPositionX] = useState(0);
   const [positionZ, setPositionZ] = useState(0);
 
@@ -28,7 +30,7 @@ export default function Positioning() {
         dpr={[1, 2]}
         shadows
         gl={{ alpha: false }}
-        camera={{ position: [2, 5, 7], fov: 50 }}
+        camera={{ position: [0, 6, 10], fov: 50 }}
       >
         <Environment preset="apartment" background blur={1} />
         <hemisphereLight intensity={1} />
@@ -41,24 +43,26 @@ export default function Positioning() {
           shadow-mapSize-width={1028}
           shadow-mapSize-height={1028}
         />
-        <gridHelper position={[0, 0, -2]} args={[8, 8]} />
+        <gridHelper position={[0, 0, 0]} args={[8, 8]} />
         <Selection>
           <EffectComposer multisampling={8} autoClear={false} enabled={true}>
             <Outline
               visibleEdgeColor="green"
-              hiddenEdgeColor="red"
+              hiddenEdgeColor="#377637"
               blur
               edgeStrength={5}
             />
           </EffectComposer>
           {[...models]}
         </Selection>
-        <OrbitControls
-          minPolarAngle={0}
-          maxPolarAngle={Math.PI / 2}
-          minDistance={6}
-          maxDistance={13}
-        />
+        {!controls && (
+          <OrbitControls
+            minPolarAngle={0}
+            maxPolarAngle={Math.PI / 2}
+            minDistance={6}
+            maxDistance={13}
+          />
+        )}
         <Plane />
       </Canvas>
       <div className="canvas-left-text">
@@ -68,19 +72,24 @@ export default function Positioning() {
         <div className="products">
           {Array.from({ length: 2 }, (_, i) => i + 1).map((e, i) => (
             <Image
+              className="pointer"
               key={i}
               width={150}
               height={150}
               src={`/images/furniture/${i + 1}.avif`}
               alt={i + 1}
               onClick={() => {
+                setPositionX(models.length);
                 setModels([
                   ...models,
                   <Model
-                    key={i + 1}
-                    id={i + 1}
-                    position={[0, 0.5, 0]}
+                    key={models.length + 1}
+                    id={models.length + 1}
+                    file={i + 1}
+                    positionX={positionX}
                     setSelected={setSelected}
+                    controls={controls}
+                    setControls={setControls}
                   />,
                 ]);
               }}
@@ -110,29 +119,43 @@ export default function Positioning() {
 
 const Plane = () => {
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, -2]} receiveShadow>
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
       <planeGeometry args={[8, 8]} />
       <meshDepthMaterial opacity={0} />
     </mesh>
   );
 };
 
-const Model = ({ id, setSelected }) => {
+const Model = ({ file, setSelected, positionX, controls, setControls, id }) => {
   const [hovered, set] = useState(false);
   useCursor(hovered);
 
-  const glb = useGLTF(`/models/furniture/${id}.glb`, true);
+  const glb = useGLTF(`/models/furniture/${file}.glb`, true);
 
   return (
     <Select enabled={hovered}>
-      <primitive
-        object={glb.scene}
-        onPointerOver={() => set(true)}
-        onPointerOut={() => set(false)}
-        onClick={() => {
-          setSelected(id);
-        }}
-      />
+      <DragControls
+        autoTransform={true}
+        axisLock="y"
+        dragLimits={[[-3.5 - positionX, 3.5 - positionX], 0, [-3.5, 3.5]]}
+        onDragStart={(e) => setControls(true)}
+        onDragEnd={(e) => setControls(false)}
+      >
+        <primitive
+          object={glb.scene.clone()}
+          onPointerOver={() => {
+            set(true);
+          }}
+          onPointerOut={() => {
+            set(false);
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            setSelected(id);
+          }}
+          position={[positionX, 0, 0]}
+        />
+      </DragControls>
     </Select>
   );
 };
