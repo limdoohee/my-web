@@ -5,6 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import {
   DragControls,
   Environment,
+  Html,
   OrbitControls,
   useCursor,
   useGLTF,
@@ -16,10 +17,10 @@ import {
   EffectComposer,
   Outline,
 } from "@react-three/postprocessing";
+import styles from "./positioning.module.css";
 
 export default function Positioning() {
   const [models, setModels] = useState([]);
-  const [selected, setSelected] = useState();
   const [controls, setControls] = useState(false);
   const [positionX, setPositionX] = useState(0);
   const [positionZ, setPositionZ] = useState(0);
@@ -43,7 +44,7 @@ export default function Positioning() {
           shadow-mapSize-width={1028}
           shadow-mapSize-height={1028}
         />
-        <gridHelper position={[0, 0, 0]} args={[8, 8]} />
+        {/* <gridHelper position={[0, 0, 0]} args={[8, 8]} /> */}
         <Selection>
           <EffectComposer multisampling={8} autoClear={false} enabled={true}>
             <Outline
@@ -86,10 +87,11 @@ export default function Positioning() {
                     key={models.length + 1}
                     id={models.length + 1}
                     file={i + 1}
-                    positionX={positionX}
-                    setSelected={setSelected}
+                    positionX={models.length}
                     controls={controls}
                     setControls={setControls}
+                    // selected={selected}
+                    // setSelected={setSelected}
                   />,
                 ]);
               }}
@@ -97,7 +99,7 @@ export default function Positioning() {
           ))}
         </div>
       </div>
-      <div className="canvas-right-text">
+      {/* <div className="canvas-right-text">
         <p
           className="pointer"
           onClick={() => {
@@ -112,7 +114,7 @@ export default function Positioning() {
         >
           Delete model
         </p>
-      </div>
+      </div> */}
     </div>
   );
 }
@@ -126,8 +128,10 @@ const Plane = () => {
   );
 };
 
-const Model = ({ file, setSelected, positionX, controls, setControls, id }) => {
+const Model = ({ file, positionX, setControls, id }) => {
   const [hovered, set] = useState(false);
+  const [selected, setSelected] = useState(false);
+  const [rotate, setRotate] = useState(0);
   useCursor(hovered);
 
   const glb = useGLTF(`/models/furniture/${file}.glb`, true);
@@ -142,6 +146,8 @@ const Model = ({ file, setSelected, positionX, controls, setControls, id }) => {
         onDragEnd={(e) => setControls(false)}
       >
         <primitive
+          castShadow
+          receiveShadow
           object={glb.scene.clone()}
           onPointerOver={() => {
             set(true);
@@ -149,12 +155,73 @@ const Model = ({ file, setSelected, positionX, controls, setControls, id }) => {
           onPointerOut={() => {
             set(false);
           }}
+          onPointerMissed={(e) => {
+            setSelected(false);
+          }}
           onClick={(e) => {
-            e.stopPropagation();
             setSelected(id);
           }}
           position={[positionX, 0, 0]}
-        />
+          rotation={[0, rotate * (Math.PI / 180), 0]}
+        >
+          {selected && (
+            <Html distanceFactor={10} className={styles["action-panel"]}>
+              <div>
+                <svg
+                  className="h-6 w-6 text-gray-700"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" />
+                  <path
+                    d="M16.3 5h.7a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h5l-2.82 -2.82m0 5.64l2.82 -2.82"
+                    transform="rotate(-45 12 12)"
+                  />
+                </svg>
+              </div>
+              <input
+                type="range"
+                min={-180}
+                max={180}
+                step={1}
+                value={rotate}
+                onChange={(e) => setRotate(e.target.value)}
+                onPointerOver={() => setControls(true)}
+                onPointerOut={(e) => setControls(false)}
+                list="marker"
+              />
+              <datalist id="marker">
+                <option value={-180}></option>
+                <option value={-90}></option>
+                <option value={0}></option>
+                <option value={90}></option>
+                <option value={180}></option>
+              </datalist>
+              {/* <div>
+            <svg
+              className="h-6 w-6 text-gray-700"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />{" "}
+              <line x1="10" y1="11" x2="10" y2="17" />{" "}
+              <line x1="14" y1="11" x2="14" y2="17" />
+            </svg>
+          </div> */}
+            </Html>
+          )}
+        </primitive>
       </DragControls>
     </Select>
   );
