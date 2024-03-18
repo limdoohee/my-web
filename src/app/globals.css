@@ -50,3 +50,7 @@ canvas {
 .gap-20 {
   gap: 20px;
 }
+
+.pointer {
+  cursor: pointer;
+}

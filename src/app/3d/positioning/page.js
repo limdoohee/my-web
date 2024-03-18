@@ -17,7 +17,8 @@ import {
 } from "@react-three/postprocessing";
 
 export default function Positioning() {
-  const [model, setModel] = useState([]);
+  const [models, setModels] = useState([]);
+  const [selected, setSelected] = useState();
   const [positionX, setPositionX] = useState(0);
   const [positionZ, setPositionZ] = useState(0);
 
@@ -50,7 +51,7 @@ export default function Positioning() {
               edgeStrength={5}
             />
           </EffectComposer>
-          {[...model]}
+          {[...models]}
         </Selection>
         <OrbitControls
           minPolarAngle={0}
@@ -73,12 +74,13 @@ export default function Positioning() {
               src={`/images/furniture/${i + 1}.avif`}
               alt={i + 1}
               onClick={() => {
-                setModel([
-                  ...model,
+                setModels([
+                  ...models,
                   <Model
-                    key={model.length + 1}
+                    key={i + 1}
                     id={i + 1}
                     position={[0, 0.5, 0]}
+                    setSelected={setSelected}
                   />,
                 ]);
               }}
@@ -87,7 +89,20 @@ export default function Positioning() {
         </div>
       </div>
       <div className="canvas-right-text">
-        <p>Click - Rotate 90 degree</p>
+        <p
+          className="pointer"
+          onClick={() => {
+            if (selected) {
+              const newData = models.filter((e) => +e.key !== selected);
+              setModels(newData);
+              setSelected(null);
+            } else {
+              alert("모델 선택 후 삭제하세요!");
+            }
+          }}
+        >
+          Delete model
+        </p>
       </div>
     </div>
   );
@@ -102,7 +117,7 @@ const Plane = () => {
   );
 };
 
-const Model = ({ id }) => {
+const Model = ({ id, setSelected }) => {
   const [hovered, set] = useState(false);
   useCursor(hovered);
 
@@ -114,6 +129,9 @@ const Model = ({ id }) => {
         object={glb.scene}
         onPointerOver={() => set(true)}
         onPointerOut={() => set(false)}
+        onClick={() => {
+          setSelected(id);
+        }}
       />
     </Select>
   );
