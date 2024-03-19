@@ -15,3 +15,45 @@
   width: 50px;
   height: 50px;
 }
+
+.size {
+  margin-top: 20px;
+}
+
+.size input {
+  color: #000;
+}
+
+.products {
+  margin-top: 20px;
+}
+
+.wall-color {
+  margin-top: 20px;
+}
+
+.wall-color ul {
+  display: flex;
+  gap: 15px;
+}
+
+.wall-color ul li {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+}
+/* .wall-color ul li:nth-child(1) {
+  background-color: #ccc;
+}
+.wall-color ul li:nth-child(2) {
+  background-color: rgb(216, 210, 179);
+}
+.wall-color ul li:nth-child(3) {
+  background-color: rgb(190, 208, 233);
+}
+.wall-color ul li:nth-child(4) {
+  background-color: rgb(90, 121, 102);
+}
+.wall-color ul li:nth-child(5) {
+  background-color: rgb(246, 211, 217);
+} */

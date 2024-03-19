@@ -9,9 +9,6 @@ import {
   OrbitControls,
   useCursor,
   useGLTF,
-  AccumulativeShadows,
-  RandomizedLight,
-  Environment as EnvironmentImpl,
 } from "@react-three/drei";
 import Image from "next/image";
 import {
@@ -21,13 +18,18 @@ import {
   Outline,
 } from "@react-three/postprocessing";
 import styles from "./positioning.module.css";
-import { MeshBasicMaterial } from "three";
+import { BackSide } from "three";
 
 export default function Positioning() {
   const [models, setModels] = useState([]);
   const [controls, setControls] = useState(false);
   const [positionX, setPositionX] = useState(0);
   const [positionZ, setPositionZ] = useState(0);
+  const [sizeX, setSizeX] = useState(4);
+  const [sizeZ, setSizeZ] = useState(6);
+  const [wallColor, setWallColor] = useState("#ddd");
+
+  const wall = ["#ccc", "#d8d2b3", "#b3d0e9", "#5a7966", "#f6d3d9"];
 
   return (
     <div className="canvas-wrapper">
@@ -35,7 +37,7 @@ export default function Positioning() {
         dpr={[1, 2]}
         shadows
         gl={{ alpha: false }}
-        camera={{ position: [0, 6, 10], fov: 50 }}
+        camera={{ position: [5, 4, 5], fov: 75 }}
       >
         <Environment preset="night" background blur={1} />
         <hemisphereLight intensity={1} />
@@ -68,13 +70,51 @@ export default function Positioning() {
             maxDistance={13}
           />
         )}
-        <Plane />
+        <Space sizeX={sizeX} sizeZ={sizeZ} wallColor={wallColor} />
       </Canvas>
       <div className="canvas-left-text">
-        <p>Left Click And Drag - Rotate</p>
-        <p>Right Click And Drag - Pan</p>
-        <p>Scroll - Zoom</p>
-        <div className="products">
+        <div>
+          <p>Left Click And Drag - Rotate</p>
+          <p>Right Click And Drag - Pan</p>
+          <p>Scroll - Zoom</p>
+        </div>
+        <div className={styles.size}>
+          <h1>방 크기</h1>
+          <p>
+            가로
+            <input
+              type="number"
+              value={sizeX}
+              onChange={(e) => {
+                setSizeX(e.target.value);
+              }}
+            />
+          </p>
+          <p>
+            세로
+            <input
+              type="number"
+              value={sizeZ}
+              onChange={(e) => {
+                setSizeZ(e.target.value);
+              }}
+            />
+          </p>
+        </div>
+        <div className={styles["wall-color"]}>
+          <h1>벽 색상</h1>
+          <ul>
+            {wall.map((e) => (
+              <li
+                key={e}
+                style={{ backgroundColor: e }}
+                onClick={() => setWallColor(e)}
+              ></li>
+            ))}
+          </ul>
+        </div>
+        <div className={styles.products}>
+          <h1>상품 목록</h1>
           {Array.from({ length: 2 }, (_, i) => i + 1).map((e, i) => (
             <Image
               className="pointer"
@@ -94,6 +134,8 @@ export default function Positioning() {
                     positionX={models.length}
                     controls={controls}
                     setControls={setControls}
+                    sizeX={sizeX}
+                    sizeZ={sizeZ}
                   />,
                 ]);
               }}
@@ -121,22 +163,78 @@ export default function Positioning() {
   );
 }
 
-const Plane = () => {
+const Space = ({ sizeX, sizeZ, wallColor }) => {
   return (
-    <group>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-        <planeGeometry args={[8, 8]} />
-        <meshStandardMaterial color={"#ccc"} />
-      </mesh>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-        <planeGeometry args={[8, 8]} />
-        <shadowMaterial transparent opacity={0.25} color={"#000"} />
-      </mesh>
-    </group>
+    <>
+      <group>
+        <mesh
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[0, 0, 0]}
+          receiveShadow
+        >
+          <planeGeometry args={[sizeX, sizeZ]} />
+          <meshStandardMaterial color={"#e6e6e6"} />
+        </mesh>
+        <mesh
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[0, 0, 0]}
+          receiveShadow
+        >
+          <planeGeometry args={[sizeX, sizeZ]} />
+          <shadowMaterial transparent opacity={0.25} color={"#000"} />
+        </mesh>
+      </group>
+      <group>
+        <mesh
+          rotation={[0, -Math.PI / 2, 0]}
+          position={[-sizeX / 2, 2, 0]}
+          receiveShadow
+        >
+          <planeGeometry args={[sizeZ, 4]} />
+          <meshStandardMaterial color={wallColor} side={BackSide} />
+        </mesh>
+        <mesh
+          rotation={[0, -Math.PI / 2, 0]}
+          position={[-sizeX / 2, 2, 0]}
+          receiveShadow
+        >
+          <planeGeometry args={[sizeZ, 4]} />
+          <shadowMaterial
+            transparent
+            opacity={0.25}
+            color={"#000"}
+            side={BackSide}
+          />
+        </mesh>
+      </group>
+      <group>
+        <mesh
+          rotation={[0, Math.PI, 0]}
+          position={[0, 2, -sizeZ / 2]}
+          receiveShadow
+        >
+          <planeGeometry args={[sizeX, 4]} />
+          <meshStandardMaterial color={wallColor} side={BackSide} />
+        </mesh>
+        <mesh
+          rotation={[0, Math.PI, 0]}
+          position={[0, 2, -sizeZ / 2]}
+          receiveShadow
+        >
+          <planeGeometry args={[sizeX, 4]} />
+          <shadowMaterial
+            transparent
+            opacity={0.25}
+            color={"#000"}
+            side={BackSide}
+          />
+        </mesh>
+      </group>
+    </>
   );
 };
 
-const Model = ({ file, positionX, setControls, id }) => {
+const Model = ({ file, positionX, setControls, id, sizeX, sizeZ }) => {
   const [hovered, set] = useState(false);
   const [selected, setSelected] = useState(false);
   const [rotate, setRotate] = useState(0);
@@ -153,7 +251,11 @@ const Model = ({ file, positionX, setControls, id }) => {
       <DragControls
         autoTransform={true}
         axisLock="y"
-        dragLimits={[[-3.5 - positionX, 3.5 - positionX], 0, [-3.5, 3.5]]}
+        dragLimits={[
+          [-((sizeX - 1) / 2) - positionX, (sizeX - 1) / 2 - positionX],
+          0,
+          [-((sizeZ - 1) / 2), (sizeZ - 1) / 2],
+        ]}
         onDragStart={(e) => setControls(true)}
         onDragEnd={(e) => setControls(false)}
       >
