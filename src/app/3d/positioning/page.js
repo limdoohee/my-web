@@ -9,6 +9,9 @@ import {
   OrbitControls,
   useCursor,
   useGLTF,
+  AccumulativeShadows,
+  RandomizedLight,
+  Environment as EnvironmentImpl,
 } from "@react-three/drei";
 import Image from "next/image";
 import {
@@ -18,6 +21,7 @@ import {
   Outline,
 } from "@react-three/postprocessing";
 import styles from "./positioning.module.css";
+import { MeshBasicMaterial } from "three";
 
 export default function Positioning() {
   const [models, setModels] = useState([]);
@@ -33,7 +37,7 @@ export default function Positioning() {
         gl={{ alpha: false }}
         camera={{ position: [0, 6, 10], fov: 50 }}
       >
-        <Environment preset="apartment" background blur={1} />
+        <Environment preset="night" background blur={1} />
         <hemisphereLight intensity={1} />
         <spotLight
           position={[5, 5, 5]}
@@ -44,14 +48,14 @@ export default function Positioning() {
           shadow-mapSize-width={1028}
           shadow-mapSize-height={1028}
         />
-        {/* <gridHelper position={[0, 0, 0]} args={[8, 8]} /> */}
+        <directionalLight position={[5, 5, 5]} intensity={4} />
         <Selection>
           <EffectComposer multisampling={8} autoClear={false} enabled={true}>
             <Outline
               visibleEdgeColor="green"
               hiddenEdgeColor="#377637"
               blur
-              edgeStrength={5}
+              edgeStrength={100}
             />
           </EffectComposer>
           {[...models]}
@@ -90,8 +94,6 @@ export default function Positioning() {
                     positionX={models.length}
                     controls={controls}
                     setControls={setControls}
-                    // selected={selected}
-                    // setSelected={setSelected}
                   />,
                 ]);
               }}
@@ -121,10 +123,16 @@ export default function Positioning() {
 
 const Plane = () => {
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-      <planeGeometry args={[8, 8]} />
-      <meshDepthMaterial opacity={0} />
-    </mesh>
+    <group>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+        <planeGeometry args={[8, 8]} />
+        <meshStandardMaterial color={"#ccc"} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+        <planeGeometry args={[8, 8]} />
+        <shadowMaterial transparent opacity={0.25} color={"#000"} />
+      </mesh>
+    </group>
   );
 };
 
@@ -135,6 +143,10 @@ const Model = ({ file, positionX, setControls, id }) => {
   useCursor(hovered);
 
   const glb = useGLTF(`/models/furniture/${file}.glb`, true);
+  glb.scene.children.forEach((mesh, i) => {
+    mesh.castShadow = true;
+    mesh.children && mesh.children.forEach((e) => (e.castShadow = true));
+  });
 
   return (
     <Select enabled={hovered}>
