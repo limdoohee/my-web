@@ -9,9 +9,6 @@ import {
   OrbitControls,
   useCursor,
   useGLTF,
-  AccumulativeShadows,
-  RandomizedLight,
-  Environment as EnvironmentImpl,
 } from "@react-three/drei";
 import Image from "next/image";
 import {
@@ -21,7 +18,7 @@ import {
   Outline,
 } from "@react-three/postprocessing";
 import styles from "./positioning.module.css";
-import { MeshBasicMaterial } from "three";
+import { BackSide } from "three";
 
 export default function Positioning() {
   const [models, setModels] = useState([]);
@@ -35,7 +32,7 @@ export default function Positioning() {
         dpr={[1, 2]}
         shadows
         gl={{ alpha: false }}
-        camera={{ position: [0, 6, 10], fov: 50 }}
+        camera={{ position: [5, 4, 5], fov: 75 }}
       >
         <Environment preset="night" background blur={1} />
         <hemisphereLight intensity={1} />
@@ -68,7 +65,7 @@ export default function Positioning() {
             maxDistance={13}
           />
         )}
-        <Plane />
+        <Space />
       </Canvas>
       <div className="canvas-left-text">
         <p>Left Click And Drag - Rotate</p>
@@ -121,18 +118,66 @@ export default function Positioning() {
   );
 }
 
-const Plane = () => {
+const Space = () => {
   return (
-    <group>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-        <planeGeometry args={[8, 8]} />
-        <meshStandardMaterial color={"#ccc"} />
-      </mesh>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-        <planeGeometry args={[8, 8]} />
-        <shadowMaterial transparent opacity={0.25} color={"#000"} />
-      </mesh>
-    </group>
+    <>
+      <group>
+        <mesh
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[0, 0, 0]}
+          receiveShadow
+        >
+          <planeGeometry args={[4, 6]} />
+          <meshStandardMaterial color={"#ccc"} />
+        </mesh>
+        <mesh
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[0, 0, 0]}
+          receiveShadow
+        >
+          <planeGeometry args={[4, 6]} />
+          <shadowMaterial transparent opacity={0.25} color={"#000"} />
+        </mesh>
+      </group>
+      <group>
+        <mesh
+          rotation={[0, -Math.PI / 2, 0]}
+          position={[-2, 2, 0]}
+          receiveShadow
+        >
+          <planeGeometry args={[6, 4]} />
+          <meshStandardMaterial color={"pink"} side={BackSide} />
+        </mesh>
+        <mesh
+          rotation={[0, -Math.PI / 2, 0]}
+          position={[-2, 2, 0]}
+          receiveShadow
+        >
+          <planeGeometry args={[6, 4]} />
+          <shadowMaterial
+            transparent
+            opacity={0.25}
+            color={"#000"}
+            side={BackSide}
+          />
+        </mesh>
+      </group>
+      <group>
+        <mesh rotation={[0, Math.PI, 0]} position={[0, 2, -3]} receiveShadow>
+          <planeGeometry args={[4, 4]} />
+          <meshStandardMaterial color={"skyblue"} side={BackSide} />
+        </mesh>
+        <mesh rotation={[0, Math.PI, 0]} position={[0, 2, -3]} receiveShadow>
+          <planeGeometry args={[4, 4]} />
+          <shadowMaterial
+            transparent
+            opacity={0.25}
+            color={"#000"}
+            side={BackSide}
+          />
+        </mesh>
+      </group>
+    </>
   );
 };
 
@@ -153,7 +198,7 @@ const Model = ({ file, positionX, setControls, id }) => {
       <DragControls
         autoTransform={true}
         axisLock="y"
-        dragLimits={[[-3.5 - positionX, 3.5 - positionX], 0, [-3.5, 3.5]]}
+        dragLimits={[[-1.5 - positionX, 1.5 - positionX], 0, [-2.5, 2.5]]}
         onDragStart={(e) => setControls(true)}
         onDragEnd={(e) => setControls(false)}
       >
