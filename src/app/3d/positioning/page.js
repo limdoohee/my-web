@@ -55,7 +55,7 @@ export default function Positioning() {
               visibleEdgeColor="green"
               hiddenEdgeColor="#377637"
               blur
-              edgeStrength={5}
+              edgeStrength={100}
             />
           </EffectComposer>
           {[...models]}
@@ -126,7 +126,7 @@ const Plane = () => {
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[8, 8]} />
-        <meshStandardMaterial color={"#fff"} />
+        <meshStandardMaterial color={"#ccc"} />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[8, 8]} />
