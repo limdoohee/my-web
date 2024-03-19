@@ -25,6 +25,8 @@ export default function Positioning() {
   const [controls, setControls] = useState(false);
   const [positionX, setPositionX] = useState(0);
   const [positionZ, setPositionZ] = useState(0);
+  const [sizeX, setSizeX] = useState(4);
+  const [sizeZ, setSizeZ] = useState(6);
 
   return (
     <div className="canvas-wrapper">
@@ -65,13 +67,39 @@ export default function Positioning() {
             maxDistance={13}
           />
         )}
-        <Space />
+        <Space sizeX={sizeX} sizeZ={sizeZ} />
       </Canvas>
       <div className="canvas-left-text">
-        <p>Left Click And Drag - Rotate</p>
-        <p>Right Click And Drag - Pan</p>
-        <p>Scroll - Zoom</p>
-        <div className="products">
+        <div>
+          <p>Left Click And Drag - Rotate</p>
+          <p>Right Click And Drag - Pan</p>
+          <p>Scroll - Zoom</p>
+        </div>
+        <div className={styles.size}>
+          <h1>방크기</h1>
+          <p>
+            가로
+            <input
+              type="number"
+              value={sizeX}
+              onChange={(e) => {
+                setSizeX(e.target.value);
+              }}
+            />
+          </p>
+          <p>
+            세로
+            <input
+              type="number"
+              value={sizeZ}
+              onChange={(e) => {
+                setSizeZ(e.target.value);
+              }}
+            />
+          </p>
+        </div>
+        <div className={styles.products}>
+          <h1>상품 목록</h1>
           {Array.from({ length: 2 }, (_, i) => i + 1).map((e, i) => (
             <Image
               className="pointer"
@@ -91,6 +119,8 @@ export default function Positioning() {
                     positionX={models.length}
                     controls={controls}
                     setControls={setControls}
+                    sizeX={sizeX}
+                    sizeZ={sizeZ}
                   />,
                 ]);
               }}
@@ -118,7 +148,7 @@ export default function Positioning() {
   );
 }
 
-const Space = () => {
+const Space = ({ sizeX, sizeZ }) => {
   return (
     <>
       <group>
@@ -127,7 +157,7 @@ const Space = () => {
           position={[0, 0, 0]}
           receiveShadow
         >
-          <planeGeometry args={[4, 6]} />
+          <planeGeometry args={[sizeX, sizeZ]} />
           <meshStandardMaterial color={"#ccc"} />
         </mesh>
         <mesh
@@ -135,25 +165,25 @@ const Space = () => {
           position={[0, 0, 0]}
           receiveShadow
         >
-          <planeGeometry args={[4, 6]} />
+          <planeGeometry args={[sizeX, sizeZ]} />
           <shadowMaterial transparent opacity={0.25} color={"#000"} />
         </mesh>
       </group>
       <group>
         <mesh
           rotation={[0, -Math.PI / 2, 0]}
-          position={[-2, 2, 0]}
+          position={[-sizeX / 2, 2, 0]}
           receiveShadow
         >
-          <planeGeometry args={[6, 4]} />
+          <planeGeometry args={[sizeZ, 4]} />
           <meshStandardMaterial color={"pink"} side={BackSide} />
         </mesh>
         <mesh
           rotation={[0, -Math.PI / 2, 0]}
-          position={[-2, 2, 0]}
+          position={[-sizeX / 2, 2, 0]}
           receiveShadow
         >
-          <planeGeometry args={[6, 4]} />
+          <planeGeometry args={[sizeZ, 4]} />
           <shadowMaterial
             transparent
             opacity={0.25}
@@ -163,12 +193,20 @@ const Space = () => {
         </mesh>
       </group>
       <group>
-        <mesh rotation={[0, Math.PI, 0]} position={[0, 2, -3]} receiveShadow>
-          <planeGeometry args={[4, 4]} />
+        <mesh
+          rotation={[0, Math.PI, 0]}
+          position={[0, 2, -sizeZ / 2]}
+          receiveShadow
+        >
+          <planeGeometry args={[sizeX, 4]} />
           <meshStandardMaterial color={"skyblue"} side={BackSide} />
         </mesh>
-        <mesh rotation={[0, Math.PI, 0]} position={[0, 2, -3]} receiveShadow>
-          <planeGeometry args={[4, 4]} />
+        <mesh
+          rotation={[0, Math.PI, 0]}
+          position={[0, 2, -sizeZ / 2]}
+          receiveShadow
+        >
+          <planeGeometry args={[sizeX, 4]} />
           <shadowMaterial
             transparent
             opacity={0.25}
@@ -181,7 +219,7 @@ const Space = () => {
   );
 };
 
-const Model = ({ file, positionX, setControls, id }) => {
+const Model = ({ file, positionX, setControls, id, sizeX, sizeZ }) => {
   const [hovered, set] = useState(false);
   const [selected, setSelected] = useState(false);
   const [rotate, setRotate] = useState(0);
@@ -198,7 +236,11 @@ const Model = ({ file, positionX, setControls, id }) => {
       <DragControls
         autoTransform={true}
         axisLock="y"
-        dragLimits={[[-1.5 - positionX, 1.5 - positionX], 0, [-2.5, 2.5]]}
+        dragLimits={[
+          [-((sizeX - 1) / 2) - positionX, (sizeX - 1) / 2 - positionX],
+          0,
+          [-((sizeZ - 1) / 2), (sizeZ - 1) / 2],
+        ]}
         onDragStart={(e) => setControls(true)}
         onDragEnd={(e) => setControls(false)}
       >
