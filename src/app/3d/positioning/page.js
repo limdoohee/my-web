@@ -27,6 +27,9 @@ export default function Positioning() {
   const [positionZ, setPositionZ] = useState(0);
   const [sizeX, setSizeX] = useState(4);
   const [sizeZ, setSizeZ] = useState(6);
+  const [wallColor, setWallColor] = useState("#ddd");
+
+  const wall = ["#ccc", "#d8d2b3", "#b3d0e9", "#5a7966", "#f6d3d9"];
 
   return (
     <div className="canvas-wrapper">
@@ -67,7 +70,7 @@ export default function Positioning() {
             maxDistance={13}
           />
         )}
-        <Space sizeX={sizeX} sizeZ={sizeZ} />
+        <Space sizeX={sizeX} sizeZ={sizeZ} wallColor={wallColor} />
       </Canvas>
       <div className="canvas-left-text">
         <div>
@@ -76,7 +79,7 @@ export default function Positioning() {
           <p>Scroll - Zoom</p>
         </div>
         <div className={styles.size}>
-          <h1>방크기</h1>
+          <h1>방 크기</h1>
           <p>
             가로
             <input
@@ -97,6 +100,18 @@ export default function Positioning() {
               }}
             />
           </p>
+        </div>
+        <div className={styles["wall-color"]}>
+          <h1>벽 색상</h1>
+          <ul>
+            {wall.map((e) => (
+              <li
+                key={e}
+                style={{ backgroundColor: e }}
+                onClick={() => setWallColor(e)}
+              ></li>
+            ))}
+          </ul>
         </div>
         <div className={styles.products}>
           <h1>상품 목록</h1>
@@ -148,7 +163,7 @@ export default function Positioning() {
   );
 }
 
-const Space = ({ sizeX, sizeZ }) => {
+const Space = ({ sizeX, sizeZ, wallColor }) => {
   return (
     <>
       <group>
@@ -158,7 +173,7 @@ const Space = ({ sizeX, sizeZ }) => {
           receiveShadow
         >
           <planeGeometry args={[sizeX, sizeZ]} />
-          <meshStandardMaterial color={"#ccc"} />
+          <meshStandardMaterial color={"#e6e6e6"} />
         </mesh>
         <mesh
           rotation={[-Math.PI / 2, 0, 0]}
@@ -176,7 +191,7 @@ const Space = ({ sizeX, sizeZ }) => {
           receiveShadow
         >
           <planeGeometry args={[sizeZ, 4]} />
-          <meshStandardMaterial color={"pink"} side={BackSide} />
+          <meshStandardMaterial color={wallColor} side={BackSide} />
         </mesh>
         <mesh
           rotation={[0, -Math.PI / 2, 0]}
@@ -199,7 +214,7 @@ const Space = ({ sizeX, sizeZ }) => {
           receiveShadow
         >
           <planeGeometry args={[sizeX, 4]} />
-          <meshStandardMaterial color={"skyblue"} side={BackSide} />
+          <meshStandardMaterial color={wallColor} side={BackSide} />
         </mesh>
         <mesh
           rotation={[0, Math.PI, 0]}
