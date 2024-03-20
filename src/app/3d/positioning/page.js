@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useModelStore, useSpaceStore } from "./store";
 import { Canvas } from "@react-three/fiber";
 import {
   DragControls,
@@ -23,15 +24,18 @@ import { BackSide } from "three";
 import * as THREE from "three";
 
 export default function Positioning() {
-  const [models, setModels] = useState([]);
-  const [controls, setControls] = useState(false);
+  const models = useModelStore((state) => state.models);
+  const setModels = useModelStore((state) => state.setModels);
+  const sizeX = useSpaceStore((state) => state.sizeX);
+  const setSizeX = useSpaceStore((state) => state.setSizeX);
+  const sizeY = useSpaceStore((state) => state.sizeY);
+  const setSizeY = useSpaceStore((state) => state.setSizeY);
+  const sizeZ = useSpaceStore((state) => state.sizeZ);
+  const setSizeZ = useSpaceStore((state) => state.setSizeZ);
+  const setWallColor = useSpaceStore((state) => state.setWallColor);
+  const setFloorColor = useSpaceStore((state) => state.setFloorColor);
+  const controls = useSpaceStore((state) => state.controls);
   const [positionX, setPositionX] = useState(0);
-  const [positionZ, setPositionZ] = useState(0);
-  const [sizeX, setSizeX] = useState(4);
-  const [sizeY, setSizeY] = useState(2.5);
-  const [sizeZ, setSizeZ] = useState(6);
-  const [wallColor, setWallColor] = useState("#ddd");
-  const [floorColor, setFloorColor] = useState("/images/floor_1.png");
 
   const wall = ["#ccc", "#d8d2b3", "#b3d0e9", "#5a7966", "#f6d3d9"];
 
@@ -74,13 +78,7 @@ export default function Positioning() {
             maxDistance={13}
           />
         )}
-        <Space
-          sizeX={sizeX}
-          sizeY={sizeY}
-          sizeZ={sizeZ}
-          wallColor={wallColor}
-          floorColor={floorColor}
-        />
+        <Space />
       </Canvas>
       <div className="canvas-left-text">
         <div>
@@ -95,9 +93,7 @@ export default function Positioning() {
             <input
               type="number"
               value={sizeX}
-              onChange={(e) => {
-                setSizeX(e.target.value);
-              }}
+              onChange={(e) => setSizeX(e.target.value)}
             />
           </p>
           <p>
@@ -105,9 +101,7 @@ export default function Positioning() {
             <input
               type="number"
               value={sizeZ}
-              onChange={(e) => {
-                setSizeZ(e.target.value);
-              }}
+              onChange={(e) => setSizeZ(e.target.value)}
             />
           </p>
           <p>
@@ -137,16 +131,13 @@ export default function Positioning() {
           <h1>바닥 종류</h1>
           <ul>
             {Array.from({ length: 4 }, (_, i) => i + 1).map((e, i) => (
-              <li>
+              <li key={i}>
                 <Image
-                  key={i}
                   width={50}
                   height={50}
                   src={`/images/floor_${i + 1}.png`}
                   alt={"floor_" + i + 1}
-                  onClick={() => {
-                    setFloorColor(`/images/floor_${i + 1}.png`);
-                  }}
+                  onClick={() => setFloorColor(`/images/floor_${i + 1}.png`)}
                 />
               </li>
             ))}
@@ -171,10 +162,6 @@ export default function Positioning() {
                     id={models.length + 1}
                     file={i + 1}
                     positionX={models.length}
-                    controls={controls}
-                    setControls={setControls}
-                    sizeX={sizeX}
-                    sizeZ={sizeZ}
                   />,
                 ]);
               }}
@@ -182,27 +169,16 @@ export default function Positioning() {
           ))}
         </div>
       </div>
-      {/* <div className="canvas-right-text">
-        <p
-          className="pointer"
-          onClick={() => {
-            if (selected) {
-              const newData = models.filter((e) => +e.key !== selected);
-              setModels(newData);
-              setSelected(null);
-            } else {
-              alert("모델 선택 후 삭제하세요!");
-            }
-          }}
-        >
-          Delete model
-        </p>
-      </div> */}
     </div>
   );
 }
 
-const Space = ({ sizeX, sizeY, sizeZ, wallColor, floorColor }) => {
+const Space = () => {
+  const sizeX = useSpaceStore((state) => state.sizeX);
+  const sizeY = useSpaceStore((state) => state.sizeY);
+  const sizeZ = useSpaceStore((state) => state.sizeZ);
+  const wallColor = useSpaceStore((state) => state.wallColor);
+  const floorColor = useSpaceStore((state) => state.floorColor);
   const texture = useTexture(floorColor);
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
   texture.repeat.set(sizeX / 2, sizeZ / 2);
@@ -276,7 +252,14 @@ const Space = ({ sizeX, sizeY, sizeZ, wallColor, floorColor }) => {
   );
 };
 
-const Model = ({ file, positionX, setControls, id, sizeX, sizeZ }) => {
+const Model = ({ file, id, positionX }) => {
+  const models = useModelStore((state) => state.models);
+  const setModels = useModelStore((state) => state.setModels);
+
+  const sizeX = useSpaceStore((state) => state.sizeX);
+  const sizeZ = useSpaceStore((state) => state.sizeZ);
+  const setControls = useSpaceStore((state) => state.setControls);
+
   const [hovered, set] = useState(false);
   const [selected, setSelected] = useState(false);
   const [rotate, setRotate] = useState(0);
@@ -305,23 +288,40 @@ const Model = ({ file, positionX, setControls, id, sizeX, sizeZ }) => {
           castShadow
           receiveShadow
           object={glb.scene.clone()}
-          onPointerOver={() => {
-            set(true);
-          }}
+          onPointerOver={() => set(true)}
           onPointerOut={() => {
             set(false);
           }}
-          onPointerMissed={(e) => {
-            setSelected(false);
-          }}
-          onClick={(e) => {
-            setSelected(id);
-          }}
+          onPointerMissed={(e) => setSelected(false)}
+          onClick={(e) => setSelected(id)}
           position={[positionX, 0, 0]}
           rotation={[0, rotate * (Math.PI / 180), 0]}
         >
           {selected && (
             <Html distanceFactor={10} className={styles["action-panel"]}>
+              <div
+                className="pointer"
+                onClick={(e) => {
+                  const newData = models.filter((e) => +e.key !== selected);
+                  setModels(newData);
+                  setSelected(null);
+                }}
+              >
+                <svg
+                  className="h-6 w-6 text-gray-700"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />{" "}
+                  <line x1="10" y1="11" x2="10" y2="17" />{" "}
+                  <line x1="14" y1="11" x2="14" y2="17" />
+                </svg>
+              </div>
               <div>
                 <svg
                   className="h-6 w-6 text-gray-700"
@@ -359,22 +359,6 @@ const Model = ({ file, positionX, setControls, id, sizeX, sizeZ }) => {
                 <option value={90}></option>
                 <option value={180}></option>
               </datalist>
-              {/* <div>
-            <svg
-              className="h-6 w-6 text-gray-700"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polyline points="3 6 5 6 21 6" />
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />{" "}
-              <line x1="10" y1="11" x2="10" y2="17" />{" "}
-              <line x1="14" y1="11" x2="14" y2="17" />
-            </svg>
-          </div> */}
             </Html>
           )}
         </primitive>
