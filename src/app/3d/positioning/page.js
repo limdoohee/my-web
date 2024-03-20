@@ -9,6 +9,7 @@ import {
   OrbitControls,
   useCursor,
   useGLTF,
+  useTexture,
 } from "@react-three/drei";
 import Image from "next/image";
 import {
@@ -19,6 +20,7 @@ import {
 } from "@react-three/postprocessing";
 import styles from "./positioning.module.css";
 import { BackSide } from "three";
+import * as THREE from "three";
 
 export default function Positioning() {
   const [models, setModels] = useState([]);
@@ -29,6 +31,7 @@ export default function Positioning() {
   const [sizeY, setSizeY] = useState(2.5);
   const [sizeZ, setSizeZ] = useState(6);
   const [wallColor, setWallColor] = useState("#ddd");
+  const [floorColor, setFloorColor] = useState("/images/floor_1.png");
 
   const wall = ["#ccc", "#d8d2b3", "#b3d0e9", "#5a7966", "#f6d3d9"];
 
@@ -76,6 +79,7 @@ export default function Positioning() {
           sizeY={sizeY}
           sizeZ={sizeZ}
           wallColor={wallColor}
+          floorColor={floorColor}
         />
       </Canvas>
       <div className="canvas-left-text">
@@ -129,6 +133,25 @@ export default function Positioning() {
             ))}
           </ul>
         </div>
+        <div className={styles["floor-color"]}>
+          <h1>바닥 종류</h1>
+          <ul>
+            {Array.from({ length: 4 }, (_, i) => i + 1).map((e, i) => (
+              <li>
+                <Image
+                  key={i}
+                  width={50}
+                  height={50}
+                  src={`/images/floor_${i + 1}.png`}
+                  alt={"floor_" + i + 1}
+                  onClick={() => {
+                    setFloorColor(`/images/floor_${i + 1}.png`);
+                  }}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
         <div className={styles.products}>
           <h1>상품 목록</h1>
           {Array.from({ length: 2 }, (_, i) => i + 1).map((e, i) => (
@@ -179,7 +202,10 @@ export default function Positioning() {
   );
 }
 
-const Space = ({ sizeX, sizeY, sizeZ, wallColor }) => {
+const Space = ({ sizeX, sizeY, sizeZ, wallColor, floorColor }) => {
+  const texture = useTexture(floorColor);
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(sizeX / 2, sizeZ / 2);
   return (
     <>
       <group>
@@ -189,7 +215,7 @@ const Space = ({ sizeX, sizeY, sizeZ, wallColor }) => {
           receiveShadow
         >
           <planeGeometry args={[sizeX, sizeZ]} />
-          <meshStandardMaterial color={"#e6e6e6"} />
+          <meshBasicMaterial map={texture} />
         </mesh>
         <mesh
           rotation={[-Math.PI / 2, 0, 0]}
