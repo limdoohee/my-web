@@ -26,6 +26,7 @@ export default function Positioning() {
   const [positionX, setPositionX] = useState(0);
   const [positionZ, setPositionZ] = useState(0);
   const [sizeX, setSizeX] = useState(4);
+  const [sizeY, setSizeY] = useState(2.5);
   const [sizeZ, setSizeZ] = useState(6);
   const [wallColor, setWallColor] = useState("#ddd");
 
@@ -70,7 +71,12 @@ export default function Positioning() {
             maxDistance={13}
           />
         )}
-        <Space sizeX={sizeX} sizeZ={sizeZ} wallColor={wallColor} />
+        <Space
+          sizeX={sizeX}
+          sizeY={sizeY}
+          sizeZ={sizeZ}
+          wallColor={wallColor}
+        />
       </Canvas>
       <div className="canvas-left-text">
         <div>
@@ -97,6 +103,16 @@ export default function Positioning() {
               value={sizeZ}
               onChange={(e) => {
                 setSizeZ(e.target.value);
+              }}
+            />
+          </p>
+          <p>
+            높이
+            <input
+              type="number"
+              value={sizeY}
+              onChange={(e) => {
+                setSizeY(e.target.value);
               }}
             />
           </p>
@@ -163,7 +179,7 @@ export default function Positioning() {
   );
 }
 
-const Space = ({ sizeX, sizeZ, wallColor }) => {
+const Space = ({ sizeX, sizeY, sizeZ, wallColor }) => {
   return (
     <>
       <group>
@@ -187,18 +203,18 @@ const Space = ({ sizeX, sizeZ, wallColor }) => {
       <group>
         <mesh
           rotation={[0, -Math.PI / 2, 0]}
-          position={[-sizeX / 2, 2, 0]}
+          position={[-sizeX / 2, sizeY / 2, 0]}
           receiveShadow
         >
-          <planeGeometry args={[sizeZ, 4]} />
+          <planeGeometry args={[sizeZ, sizeY]} />
           <meshStandardMaterial color={wallColor} side={BackSide} />
         </mesh>
         <mesh
           rotation={[0, -Math.PI / 2, 0]}
-          position={[-sizeX / 2, 2, 0]}
+          position={[-sizeX / 2, sizeY / 2, 0]}
           receiveShadow
         >
-          <planeGeometry args={[sizeZ, 4]} />
+          <planeGeometry args={[sizeZ, sizeY]} />
           <shadowMaterial
             transparent
             opacity={0.25}
@@ -210,18 +226,18 @@ const Space = ({ sizeX, sizeZ, wallColor }) => {
       <group>
         <mesh
           rotation={[0, Math.PI, 0]}
-          position={[0, 2, -sizeZ / 2]}
+          position={[0, sizeY / 2, -sizeZ / 2]}
           receiveShadow
         >
-          <planeGeometry args={[sizeX, 4]} />
+          <planeGeometry args={[sizeX, sizeY]} />
           <meshStandardMaterial color={wallColor} side={BackSide} />
         </mesh>
         <mesh
           rotation={[0, Math.PI, 0]}
-          position={[0, 2, -sizeZ / 2]}
+          position={[0, sizeY / 2, -sizeZ / 2]}
           receiveShadow
         >
-          <planeGeometry args={[sizeX, 4]} />
+          <planeGeometry args={[sizeX, sizeY]} />
           <shadowMaterial
             transparent
             opacity={0.25}
