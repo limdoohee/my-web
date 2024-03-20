@@ -42,18 +42,20 @@
   height: 50px;
   cursor: pointer;
 }
-/* .wall-color ul li:nth-child(1) {
-  background-color: #ccc;
+
+.floor-color ul {
+  display: flex;
+  gap: 15px;
 }
-.wall-color ul li:nth-child(2) {
-  background-color: rgb(216, 210, 179);
+
+.floor-color ul li {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
 }
-.wall-color ul li:nth-child(3) {
-  background-color: rgb(190, 208, 233);
+
+.floor-color ul li img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
 }
-.wall-color ul li:nth-child(4) {
-  background-color: rgb(90, 121, 102);
-}
-.wall-color ul li:nth-child(5) {
-  background-color: rgb(246, 211, 217);
-} */
