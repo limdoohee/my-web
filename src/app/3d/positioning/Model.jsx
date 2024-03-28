@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { useModelStore, useSpaceStore } from "./store";
 import { DragControls, Html, useCursor, useGLTF } from "@react-three/drei";
 import { Select } from "@react-three/postprocessing";
+import { useState } from "react";
+
 import styles from "./positioning.module.css";
+import { useModelStore, useSpaceStore } from "./store";
 
 const Model = ({ file, id, positionX }) => {
   const models = useModelStore((state) => state.models);
