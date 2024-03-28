@@ -43,6 +43,7 @@ export default function Earth() {
           makeDefault
           autoRotateSpeed={0.5}
           enablePan={false}
+          enableZoom={false}
         />
       </Canvas>
       <div className={styles.cities}>
