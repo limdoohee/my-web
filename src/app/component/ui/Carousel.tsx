@@ -1,27 +1,20 @@
-import React, { useRef, useState } from "react";
 import "./carousel.css";
-
-////////////////////////////////////////////////////////// library import
-import { Swiper, SwiperSlide } from "swiper/react";
-import {
-  Navigation,
-  Pagination,
-  Thumbs,
-  Autoplay,
-  Controller,
-  EffectFade,
-} from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-fade";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+
+import React, { useRef, useState } from "react";
+import { Autoplay, EffectFade, Pagination } from "swiper/modules";
+////////////////////////////////////////////////////////// library import
+import { Swiper, SwiperSlide } from "swiper/react";
 ////////////////////////////////////////////////////////// library import
 
 interface CarouselProps {
   pause?: boolean;
 }
 
-const Carousel = ({ pause = true, ...props }: CarouselProps) => {
+const Carousel = ({ pause = true }: CarouselProps) => {
   const swiperElRef = useRef(null) as any;
   const [isSwiperStop, setIsSwiperStop] = useState(false);
 

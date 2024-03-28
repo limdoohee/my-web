@@ -4,7 +4,7 @@ import React from "react";
 import useRefs from "react-use-refs";
 import * as THREE from "three";
 
-const Mac = ({ ...props }) => {
+const Mac = () => {
   const { nodes, materials } = useGLTF("/models/mbp-v1-pipe.glb");
   const scroll = useScroll();
   const { width, height } = useThree((state) => state.viewport);
