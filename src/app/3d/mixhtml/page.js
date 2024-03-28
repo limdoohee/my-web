@@ -1,15 +1,16 @@
 "use client";
 
-import * as THREE from "three";
-import React, { Suspense, useRef } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
 import {
-  Html,
-  Environment,
-  useGLTF,
   ContactShadows,
+  Environment,
+  Html,
   OrbitControls,
+  useGLTF,
 } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import React, { Suspense, useRef } from "react";
+import * as THREE from "three";
+
 import HeroPage from "./HeroPage";
 import styles from "./mixhtml.module.css";
 

@@ -12,8 +12,8 @@ import Model from "./Model";
 export default function Earth() {
   const cameraControlRef = useRef(null);
   const [autoRotate, setAutoRotate] = useState(true);
-  const [polarAngle, setPolarAngle] = useState();
-  const [azimuthalAngle, setAzimuthalAngle] = useState();
+  // const [polarAngle, setPolarAngle] = useState();
+  // const [azimuthalAngle, setAzimuthalAngle] = useState();
 
   return (
     <div className="canvas-wrapper">

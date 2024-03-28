@@ -1,15 +1,8 @@
-import { useSpaceStore } from "./store";
-import {
-  DragControls,
-  Environment,
-  Html,
-  OrbitControls,
-  useCursor,
-  useGLTF,
-  useTexture,
-} from "@react-three/drei";
+import { useTexture } from "@react-three/drei";
 import { BackSide } from "three";
 import * as THREE from "three";
+
+import { useSpaceStore } from "./store";
 
 const Space = () => {
   const sizeX = useSpaceStore((state) => state.sizeX);

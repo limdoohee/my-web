@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+
 import Carousel from "../app/component/ui/Carousel";
 
 const meta = {

@@ -30,17 +30,19 @@ const pageList = [
 export default function Home() {
   return (
     <div className={styles["canvas-wrapper"]}>
-      <Canvas camera={{ position: [0, 0, 100], fov: 15 }}>
-        <fog attach="fog" args={["#a79", 8.5, 12]} />
-        <Environment preset="night" background blur={0.5} />
-        <Suspense fallback={<Loader />}>
-          <ScrollControls pages={4} infinite>
-            <Rig rotation={[0, 0, 0.15]}>
-              <Carousel />
-            </Rig>
-          </ScrollControls>
-        </Suspense>
-      </Canvas>
+      <Suspense fallback={<Loading />}>
+        <Canvas camera={{ position: [0, 0, 100], fov: 15 }}>
+          <fog attach="fog" args={["#a79", 8.5, 12]} />
+          <Environment preset="night" background blur={0.5} />
+          <Suspense fallback={<Loader />}>
+            <ScrollControls pages={4} infinite>
+              <Rig rotation={[0, 0, 0.15]}>
+                <Carousel />
+              </Rig>
+            </ScrollControls>
+          </Suspense>
+        </Canvas>
+      </Suspense>
       <div className="canvas-left-text">Scroll up & down</div>
     </div>
   );
