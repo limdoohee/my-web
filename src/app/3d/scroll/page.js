@@ -1,8 +1,8 @@
 "use client";
 
-import * as THREE from "three";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { ScrollControls, useScroll, Scroll } from "@react-three/drei";
+import { Scroll, ScrollControls } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
+
 import Mac from "./Mac";
 import Text from "./Text";
 

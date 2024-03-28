@@ -1,12 +1,13 @@
 "use client";
 
+import { Html, OrbitControls, Stage } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Stage, Html, useGLTF } from "@react-three/drei";
-import Model from "./Model";
 import { useRef, useState } from "react";
 import * as THREE from "three";
-import styles from "./earth.module.css";
+
 import data from "./data.json";
+import styles from "./earth.module.css";
+import Model from "./Model";
 
 export default function Earth() {
   const cameraControlRef = useRef(null);

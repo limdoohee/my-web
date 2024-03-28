@@ -1,20 +1,21 @@
 "use client";
 
-import * as THREE from "three";
-import { Suspense, useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import {
-  Image,
-  Environment,
-  ScrollControls,
-  useScroll,
-  useTexture,
-  useProgress,
-  Html,
-} from "@react-three/drei";
-import { easing } from "maath";
 import "./util";
+
+import {
+  Environment,
+  Html,
+  Image,
+  ScrollControls,
+  useProgress,
+  useScroll,
+} from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { easing } from "maath";
 import { useRouter } from "next/navigation";
+import { Suspense, useRef, useState } from "react";
+import * as THREE from "three";
+
 import styles from "./main.module.css";
 
 const pageList = [
@@ -109,6 +110,7 @@ function Card({ src, url, ...props }) {
       onPointerOut={pointerOut}
       onClick={() => router.push(url)}
       {...props}
+      alt={src}
     >
       <bentPlaneGeometry args={[0.1, 1, 1, 20, 20]} />
     </Image>
@@ -120,7 +122,7 @@ function Loading() {
 }
 
 function Loader() {
-  const { active, progress, errors, item, loaded, total } = useProgress();
+  const { progress } = useProgress();
   return (
     <Html center className="loading">
       {parseInt(progress)} % loaded

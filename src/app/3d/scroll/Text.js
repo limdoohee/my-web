@@ -1,5 +1,6 @@
-import React, { forwardRef } from "react";
-import { Html, useGLTF, ScrollControls, useScroll } from "@react-three/drei";
+import { Html } from "@react-three/drei";
+import React from "react";
+
 import styles from "./scroll.module.css";
 
 const Text = React.forwardRef(({ head, stat, expl, ...props }, ref) => {
