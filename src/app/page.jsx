@@ -1,7 +1,7 @@
 "use client";
 
 import * as THREE from "three";
-import { useRef, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   Image,
@@ -9,6 +9,8 @@ import {
   ScrollControls,
   useScroll,
   useTexture,
+  useProgress,
+  Html,
 } from "@react-three/drei";
 import { easing } from "maath";
 import "./util";
@@ -29,12 +31,14 @@ export default function Home() {
     <div className={styles["canvas-wrapper"]}>
       <Canvas camera={{ position: [0, 0, 100], fov: 15 }}>
         <fog attach="fog" args={["#a79", 8.5, 12]} />
-        <ScrollControls pages={4} infinite>
-          <Rig rotation={[0, 0, 0.15]}>
-            <Carousel />
-          </Rig>
-        </ScrollControls>
         <Environment preset="night" background blur={0.5} />
+        <Suspense fallback={<Loader />}>
+          <ScrollControls pages={4} infinite>
+            <Rig rotation={[0, 0, 0.15]}>
+              <Carousel />
+            </Rig>
+          </ScrollControls>
+        </Suspense>
       </Canvas>
       <div className="canvas-left-text">Scroll up & down</div>
     </div>
@@ -108,5 +112,18 @@ function Card({ src, url, ...props }) {
     >
       <bentPlaneGeometry args={[0.1, 1, 1, 20, 20]} />
     </Image>
+  );
+}
+
+function Loading() {
+  return <div className="loading">Loading</div>;
+}
+
+function Loader() {
+  const { active, progress, errors, item, loaded, total } = useProgress();
+  return (
+    <Html center className="loading">
+      {parseInt(progress)} % loaded
+    </Html>
   );
 }
