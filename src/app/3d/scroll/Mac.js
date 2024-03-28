@@ -1,6 +1,6 @@
-import React, { useRef } from "react";
-import { Html, useGLTF, ScrollControls, useScroll } from "@react-three/drei";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useGLTF, useScroll } from "@react-three/drei";
+import { useFrame, useThree } from "@react-three/fiber";
+import React from "react";
 import useRefs from "react-use-refs";
 import * as THREE from "three";
 

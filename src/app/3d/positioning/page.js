@@ -1,18 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { useModelStore, useSpaceStore } from "./store";
-import { Canvas } from "@react-three/fiber";
 import { Environment, OrbitControls } from "@react-three/drei";
-import Image from "next/image";
+import { Canvas } from "@react-three/fiber";
 import {
-  Selection,
   EffectComposer,
   Outline,
+  Selection,
 } from "@react-three/postprocessing";
+import Image from "next/image";
+import { useState } from "react";
+
+import Model from "./Model";
 import styles from "./positioning.module.css";
 import Space from "./Space";
-import Model from "./Model";
+import { useModelStore, useSpaceStore } from "./store";
 
 export default function Positioning() {
   const models = useModelStore((state) => state.models);
