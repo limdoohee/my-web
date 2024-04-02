@@ -63,9 +63,9 @@ const capMaterial = new THREE.MeshStandardMaterial({
   color: "pink",
 });
 
-function Bottles(props) {
+function Bottles() {
   return (
-    <group {...props} dispose={null} scale={[0.1, 0.1, 0.1]}>
+    <group dispose={null} scale={[0.1, 0.1, 0.1]}>
       <Bottle position={[140, 0, 0]} glas="Untitled018" cap="Untitled018_1" />
       <Bottle position={[80, 0, 0]} glas="Untitled078" cap="Untitled078_1" />
       <Bottle position={[-2, 0, 0]} glas="Untitled064" cap="Untitled064_1" />
