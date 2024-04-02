@@ -7,7 +7,7 @@ import {
   useCursor,
   useGLTF,
 } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, Vector3 } from "@react-three/fiber";
 import React from "react";
 import { Suspense, useState } from "react";
 import * as THREE from "three";
@@ -76,7 +76,13 @@ function Bottles() {
   );
 }
 
-function Bottle({ glas, cap, ...props }) {
+type bottleType = {
+  position: Vector3;
+  glas: string;
+  cap: string;
+};
+
+function Bottle({ position, glas, cap }: bottleType) {
   const { nodes } = useGLTF("/models/bottles.glb");
   const [hovered, set] = useState(false);
   useCursor(hovered);
@@ -84,7 +90,7 @@ function Bottle({ glas, cap, ...props }) {
   return (
     <group
       rotation={[Math.PI / 2, 0, 3]}
-      {...props}
+      position={position}
       onPointerOver={() => set(true)}
       onPointerOut={() => set(false)}
     >
