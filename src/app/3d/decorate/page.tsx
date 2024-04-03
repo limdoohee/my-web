@@ -68,11 +68,11 @@ const Bottles = () => {
   return (
     <group dispose={null} scale={[0.1, 0.1, 0.1]}>
       <Bottle position={[140, 0, 0]} glas="Untitled018" cap="Untitled018_1" />
-      {/* <Bottle position={[80, 0, 0]} glas="Untitled078" cap="Untitled078_1" />
+      <Bottle position={[80, 0, 0]} glas="Untitled078" cap="Untitled078_1" />
       <Bottle position={[-2, 0, 0]} glas="Untitled064" cap="Untitled064_1" />
       <Bottle position={[-90, 0, 0]} glas="Untitled052" cap="Untitled052_1" />
       <Bottle position={[-140, 0, 0]} glas="Untitled072" cap="Untitled072_1" />
-      <Bottle position={[-180, 0, 0]} glas="Untitled007" cap="Untitled007_1" /> */}
+      <Bottle position={[-180, 0, 0]} glas="Untitled007" cap="Untitled007_1" />
     </group>
   );
 };
@@ -85,18 +85,7 @@ type bottleType = {
 
 type GLTFResult = GLTF & {
   nodes: {
-    Untitled078: THREE.Mesh;
-    Untitled078_1: THREE.Mesh;
-    Untitled018: THREE.Mesh;
-    Untitled018_1: THREE.Mesh;
-    Untitled064: THREE.Mesh;
-    Untitled064_1: THREE.Mesh;
-    Untitled052: THREE.Mesh;
-    Untitled052_1: THREE.Mesh;
-    Untitled072: THREE.Mesh;
-    Untitled072_1: THREE.Mesh;
-    Untitled007: THREE.Mesh;
-    Untitled007_1: THREE.Mesh;
+    [key: string]: THREE.Mesh;
   };
   materials: {
     ["default"]: THREE.MeshStandardMaterial;
