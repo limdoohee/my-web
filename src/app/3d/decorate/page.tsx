@@ -64,7 +64,7 @@ const capMaterial = new THREE.MeshStandardMaterial({
   color: "pink",
 });
 
-function Bottles() {
+const Bottles = () => {
   return (
     <group dispose={null} scale={[0.1, 0.1, 0.1]}>
       <Bottle position={[140, 0, 0]} glas="Untitled018" cap="Untitled018_1" />
@@ -75,7 +75,7 @@ function Bottles() {
       <Bottle position={[-180, 0, 0]} glas="Untitled007" cap="Untitled007_1" /> */}
     </group>
   );
-}
+};
 
 type bottleType = {
   position: Vector3;
@@ -103,7 +103,7 @@ type GLTFResult = GLTF & {
   };
 };
 
-export function Bottle({ position, glas, cap }: bottleType) {
+const Bottle = ({ position, glas, cap }: bottleType) => {
   const { nodes } = useGLTF("/models/bottles.glb") as GLTFResult;
   const [hovered, set] = useState(false);
   useCursor(hovered);
@@ -131,6 +131,6 @@ export function Bottle({ position, glas, cap }: bottleType) {
       </group>
     </group>
   );
-}
+};
 
 useGLTF.preload("/models/bottles.glb");
