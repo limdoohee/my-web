@@ -16,11 +16,7 @@ import { GLTF } from "three-stdlib";
 export default function App() {
   return (
     <div className="canvas-wrapper">
-      <Canvas
-        dpr={[1, 1.5]}
-        shadows
-        camera={{ position: [0, 0, 100], fov: 22 }}
-      >
+      <Canvas shadows camera={{ position: [0, 0, 100], fov: 22 }}>
         <color attach="background" args={["#fff"]} />
         <spotLight
           penumbra={1}
@@ -113,7 +109,10 @@ const Bottle = ({ position, glas, cap }: bottleType) => {
       onClick={(e) => {
         group["0"].children
           .filter((e) => e.type === "Group")[0]
-          .children.map((e) => (e.visible = e.name === glas ? true : false));
+          .children.map((e) => {
+            e.visible = e.name === glas ? true : false;
+            e.scale.x = e.name !== glas ? 1.5 : 0;
+          });
         setScale(1.5);
       }}
     >
