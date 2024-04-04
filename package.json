@@ -27,6 +27,7 @@
     "swiper": "^11.0.6",
     "tailwind-merge": "^2.2.1",
     "three": "^0.161.0",
+    "three-stdlib": "^2.29.6",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
