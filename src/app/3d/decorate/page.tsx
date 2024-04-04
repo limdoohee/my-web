@@ -7,7 +7,7 @@ import {
   useCursor,
   useGLTF,
 } from "@react-three/drei";
-import { Canvas, Vector3 } from "@react-three/fiber";
+import { Canvas, useThree, Vector3 } from "@react-three/fiber";
 import React, { useState } from "react";
 import { Suspense } from "react";
 import * as THREE from "three";
@@ -21,8 +21,7 @@ export default function App() {
         shadows
         camera={{ position: [0, 0, 100], fov: 22 }}
       >
-        <fog attach="fog" args={["#f0f0f0", 100, 150]} />
-        <color attach="background" args={["#f0f0f0"]} />
+        <color attach="background" args={["#fff"]} />
         <spotLight
           penumbra={1}
           angle={1}
@@ -42,16 +41,19 @@ export default function App() {
               renderOrder={100000}
             >
               <planeGeometry />
-              <shadowMaterial transparent color="#251005" opacity={0.25} />
+              <shadowMaterial transparent color="#666" opacity={0.25} />
             </mesh>
           </group>
           <hemisphereLight intensity={0.2} />
           <ambientLight intensity={0.5} />
           <Environment preset="warehouse" />
         </Suspense>
-        <OrbitControls />
+        <OrbitControls minPolarAngle={0} maxPolarAngle={Math.PI / 2} />
       </Canvas>
       <Loader />
+      <div className="canvas-center-text">
+        <p>Choose Your favorite</p>
+      </div>
     </div>
   );
 }
@@ -94,30 +96,39 @@ type GLTFResult = GLTF & {
 
 const Bottle = ({ position, glas, cap }: bottleType) => {
   const { nodes } = useGLTF("/models/bottles.glb") as GLTFResult;
-  const [hovered, set] = useState(false);
-  useCursor(hovered);
+  const { scene } = useThree();
+  const group = scene.children.filter((e) => e.type === "Group");
+  const [hovered, set] = useState(0);
+  const [scale, setScale] = useState(1);
+  useCursor(Boolean(hovered));
 
   return (
-    <group dispose={null}>
-      <group
-        rotation={[Math.PI / 2, 0, 3]}
-        position={position}
-        onPointerOver={() => set(true)}
-        onPointerOut={() => set(false)}
-      >
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes[glas].geometry}
-          material={bottleMaterial}
-        />
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes[cap].geometry}
-          material={capMaterial}
-        />
-      </group>
+    <group
+      name={glas}
+      scale={scale}
+      rotation={[Math.PI / 2, 0, 3]}
+      position={position}
+      onPointerOver={() => set(1)}
+      onPointerOut={() => set(0)}
+      onClick={(e) => {
+        group["0"].children
+          .filter((e) => e.type === "Group")[0]
+          .children.map((e) => (e.visible = e.name === glas ? true : false));
+        setScale(1.5);
+      }}
+    >
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes[glas].geometry}
+        material={bottleMaterial}
+      />
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes[cap].geometry}
+        material={capMaterial}
+      />
     </group>
   );
 };
