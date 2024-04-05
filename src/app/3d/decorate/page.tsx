@@ -1,13 +1,7 @@
 "use client";
 
 import { animated, useSpring } from "@react-spring/three";
-import {
-  Environment,
-  Loader,
-  OrbitControls,
-  useCursor,
-  useGLTF,
-} from "@react-three/drei";
+import { Environment, Loader, useCursor, useGLTF } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import React, { useState } from "react";
 import { Suspense } from "react";
@@ -48,7 +42,7 @@ export default function App() {
           <ambientLight intensity={0.5} />
           <Environment preset="warehouse" />
         </Suspense>
-        <OrbitControls minPolarAngle={0} maxPolarAngle={Math.PI / 2} />
+        {/* <OrbitControls minPolarAngle={0} maxPolarAngle={Math.PI / 2} /> */}
       </Canvas>
       <Loader />
       <Html />
