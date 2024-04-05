@@ -1,5 +1,6 @@
 "use client";
 
+import { animated, useSpring } from "@react-spring/three";
 import {
   Environment,
   Loader,
@@ -12,6 +13,8 @@ import React, { useState } from "react";
 import { Suspense } from "react";
 import * as THREE from "three";
 import { GLTF } from "three-stdlib";
+
+import { useStore } from "./store";
 
 export default function App() {
   return (
@@ -55,11 +58,11 @@ export default function App() {
 }
 
 const bottleMaterial = new THREE.MeshPhysicalMaterial({
-  color: "pink",
+  color: "#fff",
 });
 
 const capMaterial = new THREE.MeshStandardMaterial({
-  color: "pink",
+  color: "#fff",
 });
 
 const Bottles = () => {
@@ -91,29 +94,35 @@ type GLTFResult = GLTF & {
 };
 
 const Bottle = ({ position, glas, cap }: bottleType) => {
+  const click = useStore((state) => state.click);
+  const setClick = useStore((state) => state.setClick);
   const { nodes } = useGLTF("/models/bottles.glb") as GLTFResult;
   const { scene } = useThree();
   const group = scene.children.filter((e) => e.type === "Group");
   const [hovered, set] = useState(0);
-  const [scale, setScale] = useState(1);
   useCursor(Boolean(hovered));
+  const { scale } = useSpring({ scale: click ? 1.5 : 1 });
 
   return (
-    <group
+    <animated.group
       name={glas}
       scale={scale}
       rotation={[Math.PI / 2, 0, 3]}
       position={position}
       onPointerOver={() => set(1)}
       onPointerOut={() => set(0)}
-      onClick={(e) => {
-        group["0"].children
-          .filter((e) => e.type === "Group")[0]
-          .children.map((e) => {
-            e.visible = e.name === glas ? true : false;
-            e.scale.x = e.name !== glas ? 1.5 : 0;
-          });
-        setScale(1.5);
+      onClick={() => {
+        if (!click) {
+          setClick(true);
+          group["0"].children
+            .filter((e) => e.type === "Group")[0]
+            .children.map((e) => {
+              e.visible = e.name === glas ? true : false;
+              e.scale.x = 0;
+              e.scale.y = 0;
+              e.scale.z = 0;
+            });
+        }
       }}
     >
       <mesh
@@ -128,7 +137,7 @@ const Bottle = ({ position, glas, cap }: bottleType) => {
         geometry={nodes[cap].geometry}
         material={capMaterial}
       />
-    </group>
+    </animated.group>
   );
 };
 
