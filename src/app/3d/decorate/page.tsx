@@ -1,5 +1,6 @@
 "use client";
 
+import { animated, useSpring } from "@react-spring/three";
 import {
   Environment,
   Loader,
@@ -7,21 +8,20 @@ import {
   useCursor,
   useGLTF,
 } from "@react-three/drei";
-import { Canvas, useThree, Vector3 } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import React, { useState } from "react";
 import { Suspense } from "react";
 import * as THREE from "three";
 import { GLTF } from "three-stdlib";
 
+import { useStore } from "./store";
+
 export default function App() {
+  const click = useStore((state) => state.click);
   return (
     <div className="canvas-wrapper">
-      <Canvas
-        dpr={[1, 1.5]}
-        shadows
-        camera={{ position: [0, 0, 100], fov: 22 }}
-      >
-        <color attach="background" args={["#fff"]} />
+      <Canvas shadows camera={{ position: [0, 0, 100], fov: 22, near: 1 }}>
+        <color attach="background" args={[click ? "pink" : "#fff"]} />
         <spotLight
           penumbra={1}
           angle={1}
@@ -51,36 +51,34 @@ export default function App() {
         <OrbitControls minPolarAngle={0} maxPolarAngle={Math.PI / 2} />
       </Canvas>
       <Loader />
-      <div className="canvas-center-text">
-        <p>Choose Your favorite</p>
-      </div>
+      <Html />
     </div>
   );
 }
 
 const bottleMaterial = new THREE.MeshPhysicalMaterial({
-  color: "pink",
+  color: "#fff",
 });
 
 const capMaterial = new THREE.MeshStandardMaterial({
-  color: "pink",
+  color: "#fff",
 });
 
 const Bottles = () => {
   return (
     <group dispose={null} scale={[0.1, 0.1, 0.1]}>
-      <Bottle position={[140, 0, 0]} glas="Untitled018" cap="Untitled018_1" />
-      <Bottle position={[80, 0, 0]} glas="Untitled078" cap="Untitled078_1" />
-      <Bottle position={[-2, 0, 0]} glas="Untitled064" cap="Untitled064_1" />
-      <Bottle position={[-90, 0, 0]} glas="Untitled052" cap="Untitled052_1" />
-      <Bottle position={[-140, 0, 0]} glas="Untitled072" cap="Untitled072_1" />
-      <Bottle position={[-180, 0, 0]} glas="Untitled007" cap="Untitled007_1" />
+      <Bottle positionX={140} glas="Untitled018" cap="Untitled018_1" />
+      <Bottle positionX={80} glas="Untitled078" cap="Untitled078_1" />
+      <Bottle positionX={-2} glas="Untitled064" cap="Untitled064_1" />
+      <Bottle positionX={-90} glas="Untitled052" cap="Untitled052_1" />
+      <Bottle positionX={-140} glas="Untitled072" cap="Untitled072_1" />
+      <Bottle positionX={-180} glas="Untitled007" cap="Untitled007_1" />
     </group>
   );
 };
 
 type bottleType = {
-  position: Vector3;
+  positionX: number;
   glas: string;
   cap: string;
 };
@@ -94,27 +92,39 @@ type GLTFResult = GLTF & {
   };
 };
 
-const Bottle = ({ position, glas, cap }: bottleType) => {
+const Bottle = ({ positionX, glas, cap }: bottleType) => {
+  const click = useStore((state) => state.click);
+  const setClick = useStore((state) => state.setClick);
+  const clickedName = useStore((state) => state.clickedName);
+  const setClickedName = useStore((state) => state.setClickedName);
   const { nodes } = useGLTF("/models/bottles.glb") as GLTFResult;
-  const { scene } = useThree();
-  const group = scene.children.filter((e) => e.type === "Group");
   const [hovered, set] = useState(0);
-  const [scale, setScale] = useState(1);
   useCursor(Boolean(hovered));
 
+  const { scale } = useSpring({ scale: click ? 0 : 1 });
+  const { x } = useSpring({
+    x: click ? -180 : positionX,
+  });
   return (
-    <group
+    <animated.group
       name={glas}
-      scale={scale}
+      scale={clickedName === glas ? 1.5 : scale}
       rotation={[Math.PI / 2, 0, 3]}
-      position={position}
-      onPointerOver={() => set(1)}
-      onPointerOut={() => set(0)}
+      position-x={x}
+      onPointerOver={(e) => {
+        e.stopPropagation();
+        set(1);
+      }}
+      onPointerOut={(e) => {
+        e.stopPropagation();
+        set(0);
+      }}
       onClick={(e) => {
-        group["0"].children
-          .filter((e) => e.type === "Group")[0]
-          .children.map((e) => (e.visible = e.name === glas ? true : false));
-        setScale(1.5);
+        e.stopPropagation();
+        if (!click) {
+          setClick(true);
+          setClickedName(glas);
+        }
       }}
     >
       <mesh
@@ -129,7 +139,34 @@ const Bottle = ({ position, glas, cap }: bottleType) => {
         geometry={nodes[cap].geometry}
         material={capMaterial}
       />
-    </group>
+    </animated.group>
+  );
+};
+
+const Html = () => {
+  const click = useStore((state) => state.click);
+  const setClick = useStore((state) => state.setClick);
+  const setClickedName = useStore((state) => state.setClickedName);
+
+  return (
+    <>
+      {!click && (
+        <div className="canvas-center-text">
+          <p>Choose Your favorite</p>
+        </div>
+      )}
+      {click && (
+        <div
+          className="canvas-left-text"
+          onClick={() => {
+            setClick(false);
+            setClickedName("");
+          }}
+        >
+          <p>Back</p>
+        </div>
+      )}
+    </>
   );
 };
 
